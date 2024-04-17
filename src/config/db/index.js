@@ -1,37 +1,47 @@
-const oracledb = require('oracledb');
+const oracledb = require("oracledb");
 
 const dbConfig = {
-    user: 'C##DOANDU',
-    password: 'Admin123',
-    connectString: 'localhost/orcl'
+  user: "C##DOANDU",
+  password: "Admin123",
+  connectString: "localhost/orcl",
 };
 
 let connection;
 
 async function connect() {
-    try {
-        connection = await oracledb.getConnection(dbConfig);
-        console.log('Connected to Oracle database successfully');
-    } catch (err) {
-        console.error('Error connecting to Oracle database:', err);
-        throw err;
-    }
+  try {
+    connection = await oracledb.getConnection(dbConfig);
+    console.log("Connected to Oracle database successfully");
+  } catch (err) {
+    console.error("Error connecting to Oracle database:", err);
+    throw err;
+  }
 }
 
+// Thực thi truy vấn SQL
 async function executeQuery(sqlQuery) {
-    try {
-        if (!connection) {
-            throw new Error('Database connection not established');
-        }
-        const result = await connection.execute(sqlQuery);
-        return result.rows;
-    } catch (err) {
-        console.error('Error executing query:', err);
-        throw err;
-    }
+  try {
+    const result = await connection.execute(sqlQuery);
+    return result.rows;
+  } catch (error) {
+    console.error("Oracle DB query error:", error);
+    throw error;
+  }
+}
+
+// Gọi stored procedure
+async function executeProcedure(procedureName, bindVars) {
+  try {
+    const result = await connection.execute(procedureName, bindVars);
+    return result;
+  } catch (error) {
+    console.error("Oracle DB procedure execution error:", error);
+    throw error;
+  }
 }
 
 module.exports = {
-    connect,
-    executeQuery
+  connect,
+  executeQuery,
+  executeProcedure
 };

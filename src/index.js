@@ -5,7 +5,6 @@ const morgan = require('morgan');
 
 const db = require('./config/db');
 const route = require('./routes');
-const { convertArrayToObjects } = require('./util/toObject');
 
 const app = express();
 const port = 3001;
@@ -52,11 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 // Initialize routes
 route(app);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
+
 
 // Start the server
 app.listen(port, () => {
