@@ -11,24 +11,18 @@ const port = 3001;
 
 // Custom CORS middleware
 app.use(function (req, res, next) {
-    // Allow requests from all origins
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Allow specific HTTP methods
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Allow specific headers
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization');
 
-    // Allow credentials (cookies, authorization headers)
     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Handle preflight requests (OPTIONS method)
     if (req.method === 'OPTIONS') {
         return res.sendStatus(200); // Respond with 200 OK for OPTIONS requests
     }
 
-    // Pass control to the next middleware
     next();
 });
 
@@ -50,8 +44,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Initialize routes
 route(app);
-
-
 
 // Start the server
 app.listen(port, () => {
