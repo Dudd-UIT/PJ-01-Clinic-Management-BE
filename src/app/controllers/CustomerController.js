@@ -14,11 +14,11 @@ class CustomerController {
         const { hoTen, gioiTinh, diaChi, ngaySinh, cccd, soDienThoai, diUng, chuThich, ...others } = req.body;
         console.log(hoTen, gioiTinh, diaChi, ngaySinh, cccd, soDienThoai, diUng, chuThich)
         try {
-            const formattedNgaySinh = format(new Date(ngaySinh), 'dd-MM-yyyy');
+            const formattedNgaySinh = new Date(ngaySinh);
 
             const sqlQuery = `
                 BEGIN
-                    INSERT_BENHNHAN(:p_cccd, :p_hoten, TO_DATE(:p_ngaysinh, 'DD-MM-YYYY'), :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung);
+                    INSERT_BENHNHAN(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung);
                 END;`;
 
             const bindVars = {
@@ -33,7 +33,7 @@ class CustomerController {
             };
 
             const result = await db.executeProcedure(sqlQuery, bindVars);
-
+            console.log(result)
             // Xử lý kết quả trả về
             res.status(200).json({ message: "Data inserted successfully" });
         } catch (error) {
