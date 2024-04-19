@@ -56,26 +56,26 @@ class SiteController {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const customers = await db.executeQuery(sqlQuery);
   
-      const formattedCustomers = customers.map(customer => {
-        const [mabn, matk, cccd, hoTen, ngaySinh, gioiTinh, sdt, diaChi, tienSuBenh, diUng] = customer;
+      // const formattedCustomers = customers.map(customer => {
+      //   const [mabn, matk, cccd, hoTen, ngaySinh, gioiTinh, sdt, diaChi, tienSuBenh, diUng] = customer;
   
-        const formattedNgaySinh = formatDate(ngaySinh);
+      //   const formattedNgaySinh = new Date(ngaySinh);
   
-        return [
-          mabn,
-          matk,
-          cccd,
-          hoTen,
-          formattedNgaySinh,
-          gioiTinh,
-          sdt,
-          diaChi,
-          tienSuBenh,
-          diUng
-        ];
-      });
+      //   return [
+      //     mabn,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     formattedNgaySinh,
+      //     gioiTinh,
+      //     sdt,
+      //     diaChi,
+      //     tienSuBenh,
+      //     diUng
+      //   ];
+      // });
   
-      setTimeout(() => res.send(formattedCustomers), 1000);
+      setTimeout(() => res.send(customers), 1000);
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
