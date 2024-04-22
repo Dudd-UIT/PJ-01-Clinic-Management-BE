@@ -4,7 +4,7 @@ const { format } = require("date-fns");
 
 class PatientController {
   // GET /patient/
-  async index(req, res) {
+  async index(req, res) { 
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const patients = await db.executeQuery(sqlQuery);
