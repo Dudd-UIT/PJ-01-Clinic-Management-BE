@@ -51,9 +51,40 @@ class SiteController {
 
 
   // GET /tiepdon
-  async tiepdon(req, res) {
+  async dangky(req, res) {
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
+      const customers = await db.executeQuery(sqlQuery);
+  
+      const formattedCustomers = customers.map(customer => {
+        const [mabn, matk, cccd, hoTen, ngaySinh, gioiTinh, sdt, diaChi, tienSuBenh, diUng] = customer;
+  
+        const formattedNgaySinh = new Date(ngaySinh);
+  
+        return [
+          mabn,
+          matk,
+          cccd,
+          hoTen,
+          formattedNgaySinh,
+          gioiTinh,
+          sdt,
+          diaChi,
+          tienSuBenh,
+          diUng
+        ];
+      });
+  
+      setTimeout(() => res.send(customers), 1000);
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  async lichhen(req, res) {
+    try {
+      const sqlQuery = "SELECT * FROM BACSI";
       const customers = await db.executeQuery(sqlQuery);
   
       // const formattedCustomers = customers.map(customer => {
@@ -74,7 +105,7 @@ class SiteController {
       //     diUng
       //   ];
       // });
-  
+      console.log(customers)
       setTimeout(() => res.send(customers), 1000);
     } catch (error) {
       console.error("Error querying database:", error);

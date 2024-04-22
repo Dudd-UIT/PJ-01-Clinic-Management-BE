@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-const customerController = require('../app/controllers/CustomerController')
+const patientController = require('../app/controllers/PatientController')
 
 // /customer/...
 
-router.post('/store', customerController.store)
-router.get('/', customerController.index)
+router.post('/store', patientController.store)
+router.get('/', patientController.index)
 
 // router.get('/:id/edit', customerController.edit)
 // router.post('/handle-form-actions', customerController.handleFormActions)
