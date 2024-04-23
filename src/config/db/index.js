@@ -1,7 +1,7 @@
 const oracledb = require("oracledb");
 
 const dbConfig = {
-  user: "QUANLYPHONGKHAM2",
+  user: "QUANLYPHONGKHAM",
   password: "Admin123",
   connectString: "localhost/orcl",
 };
