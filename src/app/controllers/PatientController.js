@@ -4,7 +4,7 @@ const { format } = require("date-fns");
 
 class PatientController {
   // GET /patient/
-  async index(req, res) {
+  async index(req, res) { 
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const patients = await db.executeQuery(sqlQuery);
@@ -56,7 +56,7 @@ class PatientController {
       cccd,
       soDienThoai,
       diUng,
-      chuThich,
+      tienSuBenh,
       ...others
     } = req.body;
     console.log(
@@ -67,7 +67,7 @@ class PatientController {
       cccd,
       soDienThoai,
       diUng,
-      chuThich
+      tienSuBenh
     );
     try {
       const formattedNgaySinh = new Date(ngaySinh);
@@ -84,7 +84,7 @@ class PatientController {
         p_gioitinh: gioiTinh,
         p_sdt: soDienThoai,
         p_diachi: diaChi,
-        p_tiensubenh: chuThich,
+        p_tiensubenh: tienSuBenh,
         p_diung: diUng,
       };
 

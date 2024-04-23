@@ -6,7 +6,7 @@ class SiteController {
   // GET /
   async index(req, res, next) {
     const customerId = req.params.customerId;
-
+    
     try {
       const sqlQuery = 'SELECT Tong_Doanhso(:P_MAKH) AS TOTAL_REVENUE FROM DUAL';
       const bindVars = {
