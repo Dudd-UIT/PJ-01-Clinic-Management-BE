@@ -18,7 +18,7 @@ class DichVuController {
         return [madv, maldv, tendv, formattedGiaDV];
       });
       console.log(dichvus);
-      setTimeout(() => res.send(dichvus), 1000);
+      setTimeout(() => res.send(formattedDichvus), 1000);
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
