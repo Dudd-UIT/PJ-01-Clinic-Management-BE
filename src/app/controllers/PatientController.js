@@ -56,7 +56,7 @@ class PatientController {
       cccd,
       soDienThoai,
       diUng,
-      chuThich,
+      tienSuBenh,
       ...others
     } = req.body;
     console.log(
@@ -67,7 +67,7 @@ class PatientController {
       cccd,
       soDienThoai,
       diUng,
-      chuThich
+      tienSuBenh
     );
     try {
       const formattedNgaySinh = new Date(ngaySinh);
@@ -84,7 +84,7 @@ class PatientController {
         p_gioitinh: gioiTinh,
         p_sdt: soDienThoai,
         p_diachi: diaChi,
-        p_tiensubenh: chuThich,
+        p_tiensubenh: tienSuBenh,
         p_diung: diUng,
       };
 
