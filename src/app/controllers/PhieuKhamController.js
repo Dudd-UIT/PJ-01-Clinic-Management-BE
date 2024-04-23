@@ -183,6 +183,80 @@ class PhieuKhamController {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+
+  // GET /phieukham/chitiet-pk/:id
+  async fetchKQKham(req, res) {
+    try {
+      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, 
+      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG
+      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv
+      WHERE pk.MABSC = bs.MABS
+      AND pk.MADVK = dv.MADV
+      AND pk.MAPK = ${req.params.id}`;
+
+      let ctpk = await db.executeQuery(sqlQuery);
+
+      // làm lại khúc ni
+      if (ctpk.length === 0) {
+        res.status(200).json({ 
+          error: "No data was found base on request id",
+          results: ctpk
+        });
+      }
+
+      ctpk = ctpk[0];
+      const objCtpk = {
+        MAPK: ctpk[0],
+        TENBS: ctpk[1],
+        TRINHDO: ctpk[2],
+        TENDV: ctpk[3],
+        MAPHONG: ctpk[4],
+        NGAYKHAM: ctpk[5],
+        NGAYDATLICH: ctpk[6],
+        TRANGTHAITH: ctpk[7],
+        LYDOKHAM: ctpk[8],
+        TRIEUCHUNGBENH: ctpk[9],
+        TINHTRANGCOTHE: ctpk[10],
+        LOIDAN: ctpk[11],
+        HUYETAP: ctpk[12],
+        CHIEUCAO: ctpk[13],
+        CANNANG: ctpk[14],
+      };
+
+      setTimeout(() => res.send(objCtpk), 1000);
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // GET /phieukham/ds-benh/:id
+  async fetchDSBenh(req, res) {
+    try {
+      const sqlQuery = `SELECT b.MAICD, b.TENBENH
+      FROM PHIEUKHAM pk, CHITIETBENH ctb, BENH b
+      WHERE pk.MAPK = ctb.MAPK
+      AND ctb.MAICD = b.MAICD
+      AND pk.MAPK = ${req.params.id}`;
+
+      const benhList = await db.executeQuery(sqlQuery);
+      // xử lý trường hợp nhận được mảng rỗng
+
+      const objBenhList = benhList.map((benhItem) => {
+        const [MAICD, TENBENH] = benhItem;
+
+        return {
+          MAICD,
+          TENBENH,
+        };
+      });
+
+      setTimeout(() => res.send(objBenhList), 1000);
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 }
 
 module.exports = new PhieuKhamController();
