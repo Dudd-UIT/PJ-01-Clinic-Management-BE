@@ -66,7 +66,7 @@ class PhieuKhamController {
       cccd,
       soDienThoai,
       diUng,
-      tienSuBenh,
+      tienSuBenh, // bên UI sửa lại tham số cho giống
       maBS,
       maDV,
       maPhong,
