@@ -10,18 +10,12 @@ class DichVuController {
       const sqlQuery = "SELECT * FROM DICHVU";
       const dichvus = await db.executeQuery(sqlQuery);
 
-      const formattedDichvus = dichvus.map((dichvu) => {
-        const [madv, maldv, tendv, giadv] = dichvu;
-
-        return { madv, maldv, tendv, giadv };
-      });
-      console.log(dichvus);
       setTimeout(
         () =>
           res.send({
             errcode: 0,
             message: "Successful",
-            data: formattedDichvus,
+            data: dichvus,
           }),
         1000
       );
