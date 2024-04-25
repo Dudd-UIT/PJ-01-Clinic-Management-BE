@@ -8,6 +8,7 @@ const phieukhamController = require('../app/controllers/PhieuKhamController')
 router.post('/insert-pk', phieukhamController.insertPK)
 router.post('/insert-bn-pk', phieukhamController.insertBNPK)
 router.get('/dsdk', phieukhamController.fetchDSDK)
-
+router.get('/chitiet-pk/:id', phieukhamController.fetchKQKham)
+router.get('/ds-benh/:id', phieukhamController.fetchDSBenh)
 
 module.exports = router

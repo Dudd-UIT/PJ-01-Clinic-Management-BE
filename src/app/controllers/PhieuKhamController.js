@@ -8,17 +8,7 @@ class PhieuKhamController {
     // maHD duoc update o trong procedure
     // cac thuoc tinh con lai la null, se dc cap nhat trong khi kham benh
     // STT tinh ntn?, where?
-    const {
-      maBN,
-      maBS,
-      maDV,
-      maPhong,
-      ngayKham,
-      lyDoKham,
-      STT,
-      trangThai,
-      ...others
-    } = req.body;
+    const { maBN, maBS, dichVu, ngayKham, lyDoKham, ...others } = req.body;
     try {
       const sqlQuery = ` BEGIN
           INSERT_PHIEUKHAM_HOADON(:v_MABN, :v_MADV, :v_MABS, :v_MAPHONG, :v_NGAY_KHAM, :v_NGAY_DAT_LICH, :v_TRANGTHAI, :v_STT, :v_HUYETAP, :v_CHIEUCAO, :v_CANNANG, :v_LYDO, :v_TRIEUCHUNGBENH, :v_TINHTRANG, :v_KETLUAN);
@@ -26,13 +16,13 @@ class PhieuKhamController {
 
       const bindVars = {
         v_MABN: maBN,
-        v_MADV: maDV,
+        v_MADV: dichVu,
         v_MABS: maBS,
-        v_MAPHONG: maPhong,
+        v_MAPHONG: Math.floor(Math.random() * 4) + 1,
         v_NGAY_KHAM: new Date(ngayKham),
         v_NGAY_DAT_LICH: null,
-        v_TRANGTHAI: trangThai,
-        v_STT: STT,
+        v_TRANGTHAI: "Dang thuc hien",
+        v_STT: Math.floor(Math.random() * 20) + 1,
         v_HUYETAP: null,
         v_CHIEUCAO: null,
         v_CANNANG: null,
@@ -68,20 +58,16 @@ class PhieuKhamController {
       diUng,
       tienSuBenh, // bên UI sửa lại tham số cho giống
       maBS,
-      maDV,
-      maPhong,
+      dichVu,
       ngayKham,
       lyDoKham,
-      STT,
-      trangThai,
       ...others
     } = req.body;
 
     try {
       const sqlQuery = ` BEGIN
-          INSERT_PHIEUKHAM_HOADON_BENHNHAN(:par_cccd, :par_HoTen, :par_NgaySinh, :par_GioiTinh, :par_sdt, :par_DiaChi, :par_TienSuBenh, :par_DiUng, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNG, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN);
+          INSERT_PHIEUKHAM_HOADON_BENHNHAN(:par_cccd, :par_HoTen, :par_NgaySinh, :par_GioiTinh, :par_sdt, :par_DiaChi, :par_TienSuBenh, :par_DiUng, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNG, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :v_mabnold);
         END; `;
-
       const bindVars = {
         par_cccd: cccd,
         par_HoTen: hoTen,
@@ -91,13 +77,13 @@ class PhieuKhamController {
         par_DiaChi: diaChi,
         par_TienSuBenh: tienSuBenh,
         par_DiUng: diUng,
-        PAR_MADV: maDV,
+        PAR_MADV: dichVu,
         PAR_MABS: maBS,
-        PAR_MAPHONG: maPhong,
+        PAR_MAPHONG: Math.floor(Math.random() * 4) + 1,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
-        PAR_TRANGTHAI: trangThai,
-        PAR_STT: STT,
+        PAR_TRANGTHAI: "Dang thuc hien",
+        PAR_STT: Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
         PAR_CHIEUCAO: null,
         PAR_CANNANG: null,
@@ -105,13 +91,15 @@ class PhieuKhamController {
         PAR_LYDO: lyDoKham,
         PAR_TINHTRANG: null,
         PAR_KETLUAN: null,
+        v_mabnold: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
-
-      const result = await db.executeProcedure(sqlQuery, bindVars);
+      const result1 = await db.executeProcedure(sqlQuery, bindVars);
 
       // Xử lý kết quả trả về
       res.status(200).json({
+        errcode: 0,
         message: "Data BENHNHAN, PHIEUKHAM, HOADON inserted successfully",
+        maBNOld: result1.outBinds.v_mabnold,
       });
     } catch (error) {
       console.error("Error calling procedure:", error);
@@ -177,10 +165,114 @@ class PhieuKhamController {
         };
       });
 
-      setTimeout(() => res.send(formattedDSDKKham), 1000);
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: formattedDSDKKham,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // GET /phieukham/chitiet-pk/:id
+  async fetchKQKham(req, res) {
+    try {
+      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, 
+      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG
+      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv
+      WHERE pk.MABSC = bs.MABS
+      AND pk.MADVK = dv.MADV
+      AND pk.MAPK = ${req.params.id}`;
+
+      let ctpk = await db.executeQuery(sqlQuery);
+
+      // làm lại khúc ni
+      if (ctpk.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MAPK",
+          data: ctpk,
+        });
+        return;
+      }
+
+      ctpk = ctpk[0];
+      const objCtpk = {
+        MAPK: ctpk[0],
+        TENBS: ctpk[1],
+        TRINHDO: ctpk[2],
+        TENDV: ctpk[3],
+        MAPHONG: ctpk[4],
+        NGAYKHAM: ctpk[5],
+        NGAYDATLICH: ctpk[6],
+        TRANGTHAITH: ctpk[7],
+        LYDOKHAM: ctpk[8],
+        TRIEUCHUNGBENH: ctpk[9],
+        TINHTRANGCOTHE: ctpk[10],
+        LOIDAN: ctpk[11],
+        HUYETAP: ctpk[12],
+        CHIEUCAO: ctpk[13],
+        CANNANG: ctpk[14],
+      };
+
+      setTimeout(() => res.send(objCtpk), 1000);
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // GET /phieukham/ds-benh/:id
+  async fetchDSBenh(req, res) {
+    try {
+      const sqlQuery = `SELECT b.MAICD, b.TENBENH
+      FROM PHIEUKHAM pk, CHITIETBENH ctb, BENH b
+      WHERE pk.MAPK = ctb.MAPK
+      AND ctb.MAICD = b.MAICD
+      AND pk.MAPK = ${req.params.id}`;
+
+      const benhList = await db.executeQuery(sqlQuery);
+
+      // xử lý trường hợp nhận được mảng rỗng
+      if (benhList.length === 0) {
+        res.send({
+          errcode: 1,
+          message: "No data found: DS Benh rong or Invalid MAPK",
+          data: benhList,
+        });
+        return;
+      }
+
+      const objBenhList = benhList.map((benhItem) => {
+        const [MAICD, TENBENH] = benhItem;
+
+        return {
+          MAICD,
+          TENBENH,
+        };
+      });
+
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: objBenhList,
+          }),
+        1000
+      );
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({
+        errcode: 2,
+        message: "Internal Server Error",
+      });
     }
   }
 }

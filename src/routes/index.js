@@ -3,6 +3,7 @@ const patientRouter = require('./patient')
 const doctorRouter = require('./doctor')
 const dichvuRouter = require('./dichvu')
 const phieukhamRouter = require('./phieukham')
+const donthuocRouter = require('./donthuoc')
 
 function route(app) {
     app.use('/', siteRouter)
@@ -14,6 +15,8 @@ function route(app) {
     app.use('/service', dichvuRouter)
 
     app.use('/phieukham', phieukhamRouter)
+
+    app.use('/donthuoc', donthuocRouter)
 
 }
 
