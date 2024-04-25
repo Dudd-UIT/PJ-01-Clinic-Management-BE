@@ -126,44 +126,50 @@ class PhieuKhamController {
       const dsDKKham = await db.executeQuery(sqlQuery);
 
       const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
-        const [
-          MAPK,
-          NGAYKHAM,
-          STT,
-          TENBN,
-          NGAYSINH,
-          GIOITINH,
-          SDT,
-          TENBS,
-          TRINHDO,
-          TENDV,
-          TRANGTHAIKHAM,
-          TTTTPK,
-          TIENTHUOC,
-          TTTTDTH,
-          TIENCLS,
-          TTTTCLS,
-        ] = itemDKKham;
-
-        return {
-          MAPK,
-          NGAYKHAM: new Date(NGAYKHAM),
-          STT,
-          TENBN,
-          NGAYSINH: new Date(NGAYSINH),
-          GIOITINH,
-          SDT,
-          TENBS,
-          TRINHDO,
-          TENDV,
-          TRANGTHAIKHAM,
-          TTTTPK,
-          TIENTHUOC,
-          TTTTDTH,
-          TIENCLS,
-          TTTTCLS,
-        };
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        itemDKKham.NGAYSINH = new Date(itemDKKham.NGAYSINH);
+        return itemDKKham;
       });
+
+      // const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
+      //   const [
+      //     MAPK,
+      //     NGAYKHAM,
+      //     STT,
+      //     TENBN,
+      //     NGAYSINH,
+      //     GIOITINH,
+      //     SDT,
+      //     TENBS,
+      //     TRINHDO,
+      //     TENDV,
+      //     TRANGTHAIKHAM,
+      //     TTTTPK,
+      //     TIENTHUOC,
+      //     TTTTDTH,
+      //     TIENCLS,
+      //     TTTTCLS,
+      //   ] = itemDKKham;
+
+      //   return {
+      //     MAPK,
+      //     NGAYKHAM: new Date(NGAYKHAM),
+      //     STT,
+      //     TENBN,
+      //     NGAYSINH: new Date(NGAYSINH),
+      //     GIOITINH,
+      //     SDT,
+      //     TENBS,
+      //     TRINHDO,
+      //     TENDV,
+      //     TRANGTHAIKHAM,
+      //     TTTTPK,
+      //     TIENTHUOC,
+      //     TTTTDTH,
+      //     TIENCLS,
+      //     TTTTCLS,
+      //   };
+      // });
 
       setTimeout(
         () =>
@@ -202,26 +208,17 @@ class PhieuKhamController {
         return;
       }
 
-      ctpk = ctpk[0];
-      const objCtpk = {
-        MAPK: ctpk[0],
-        TENBS: ctpk[1],
-        TRINHDO: ctpk[2],
-        TENDV: ctpk[3],
-        MAPHONG: ctpk[4],
-        NGAYKHAM: ctpk[5],
-        NGAYDATLICH: ctpk[6],
-        TRANGTHAITH: ctpk[7],
-        LYDOKHAM: ctpk[8],
-        TRIEUCHUNGBENH: ctpk[9],
-        TINHTRANGCOTHE: ctpk[10],
-        LOIDAN: ctpk[11],
-        HUYETAP: ctpk[12],
-        CHIEUCAO: ctpk[13],
-        CANNANG: ctpk[14],
-      };
+      let objCtpk = ctpk[0];
 
-      setTimeout(() => res.send(objCtpk), 1000);
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successfull",
+            data: objCtpk,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -249,21 +246,12 @@ class PhieuKhamController {
         return;
       }
 
-      const objBenhList = benhList.map((benhItem) => {
-        const [MAICD, TENBENH] = benhItem;
-
-        return {
-          MAICD,
-          TENBENH,
-        };
-      });
-
       setTimeout(
         () =>
           res.send({
             errcode: 0,
             message: "Successful",
-            data: objBenhList,
+            data: benhList,
           }),
         1000
       );

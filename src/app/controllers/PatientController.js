@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
+const { DateTime2 } = require("mssql");
 
 class PatientController {
   // GET /patient/
@@ -10,34 +11,39 @@ class PatientController {
       const patients = await db.executeQuery(sqlQuery);
 
       const formattedPatients = patients.map((patient) => {
-        const [
-          mabn,
-          matk,
-          cccd,
-          hoTen,
-          ngaySinh,
-          gioiTinh,
-          sdt,
-          diaChi,
-          tienSuBenh,
-          diUng,
-        ] = patient;
+        patient.NGAYSINH = new Date(patient.NGAYSINH);
+        return patient;
+      })
 
-        const formattedNgaySinh = new Date(ngaySinh);
+      // const formattedPatients = patients.map((patient) => {
+      //   const [
+      //     mabn,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     ngaySinh,
+      //     gioiTinh,
+      //     sdt,
+      //     diaChi,
+      //     tienSuBenh,
+      //     diUng,
+      //   ] = patient;
 
-        return {
-          mabn,
-          matk,
-          cccd,
-          hoTen,
-          formattedNgaySinh,
-          gioiTinh,
-          sdt,
-          diaChi,
-          tienSuBenh,
-          diUng,
-        };
-      });
+      //   const formattedNgaySinh = new Date(ngaySinh);
+
+      //   return {
+      //     mabn,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     formattedNgaySinh,
+      //     gioiTinh,
+      //     sdt,
+      //     diaChi,
+      //     tienSuBenh,
+      //     diUng,
+      //   };
+      // });
 
       setTimeout(
         () =>

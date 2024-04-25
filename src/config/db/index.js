@@ -21,7 +21,11 @@ async function connect() {
 // Thực thi truy vấn SQL
 async function executeQuery(sqlQuery) {
   try {
-    const result = await connection.execute(sqlQuery);
+    const result = await connection.execute(
+      sqlQuery,
+      [],
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
     return result.rows;
   } catch (error) {
     console.error("Oracle DB query error:", error);

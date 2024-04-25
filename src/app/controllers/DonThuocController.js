@@ -28,42 +28,12 @@ class DonThuocController {
         return;
       }
 
-      const objThuocList = thuocList.map((thuocItem) => {
-        const [
-          MATHUOC,
-          TENTHUOC,
-          THANHPHAN,
-          TENDONVI,
-          SOLUONGTHUOC,
-          GIABAN,
-          SOLANUONG,
-          SOLUONGUONG,
-          GHICHU,
-          MAHD,
-          TTTT,
-        ] = thuocItem;
-
-        return {
-          MATHUOC,
-          TENTHUOC,
-          THANHPHAN,
-          TENDONVI,
-          SOLUONGTHUOC,
-          GIABAN,
-          SOLANUONG,
-          SOLUONGUONG,
-          GHICHU,
-          MAHD,
-          TTTT,
-        };
-      });
-
       setTimeout(
         () =>
           res.send({
             errcode: 0,
             message: "Successful",
-            data: objThuocList,
+            data: thuocList,
           }),
         1000
       );
