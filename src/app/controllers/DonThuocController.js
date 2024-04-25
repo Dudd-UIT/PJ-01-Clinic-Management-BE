@@ -21,9 +21,11 @@ class DonThuocController {
       // coi lại khúc ni
       if (thuocList.length === 0) {
         res.status(200).json({
-          errcode: "Don thuoc chua co thuoc",
-          results: thuocList,
+          errcode: 1,
+          message: "No data found: don thuoc chua co data or Invalid MAPK",
+          data: thuocList,
         });
+        return;
       }
 
       const objThuocList = thuocList.map((thuocItem) => {
@@ -59,14 +61,18 @@ class DonThuocController {
       setTimeout(
         () =>
           res.send({
-            errcode: "Successful",
-            results: objThuocList,
+            errcode: 0,
+            message: "Successful",
+            data: objThuocList,
           }),
         1000
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ 
+        errcode: 2,
+        message: "Internal Server Error",
+      });
     }
   }
 }

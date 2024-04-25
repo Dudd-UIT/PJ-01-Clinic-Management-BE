@@ -13,12 +13,18 @@ class DichVuController {
       const formattedDichvus = dichvus.map((dichvu) => {
         const [madv, maldv, tendv, giadv] = dichvu;
 
-        const formattedGiaDV = Int(giadv);
-
-        return [madv, maldv, tendv, formattedGiaDV];
+        return { madv, maldv, tendv, giadv };
       });
       console.log(dichvus);
-      setTimeout(() => res.send(formattedDichvus), 1000);
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: formattedDichvus,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });

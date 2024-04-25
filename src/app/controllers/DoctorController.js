@@ -24,7 +24,7 @@ class DoctorController {
 
         const formattedNgaySinh = new Date(ngaySinh);
 
-        return [
+        return {
           mabs,
           matk,
           cccd,
@@ -35,10 +35,18 @@ class DoctorController {
           formattedNgaySinh,
           diaChi,
           chuyenKhoa,
-        ];
+        };
       });
       console.log(formattedDoctors);
-      setTimeout(() => res.send(formattedDoctors), 1000);
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: formattedDoctors,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
