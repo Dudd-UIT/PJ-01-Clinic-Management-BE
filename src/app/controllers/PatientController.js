@@ -38,7 +38,7 @@ class PatientController {
           diUng,
         ];
       });
-
+      // res.send(formattedPatients)
       setTimeout(() => res.send(formattedPatients), 1000);
     } catch (error) {
       console.error("Error querying database:", error);
@@ -66,7 +66,7 @@ class PatientController {
       ngaySinh,
       cccd,
       soDienThoai,
-      diUng,
+      'diUng',
       chuThich
     );
     try {

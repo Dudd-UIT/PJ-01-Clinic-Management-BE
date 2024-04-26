@@ -37,7 +37,6 @@ class DoctorController {
           chuyenKhoa,
         ];
       });
-      console.log(formattedDoctors);
       setTimeout(() => res.send(formattedDoctors), 1000);
     } catch (error) {
       console.error("Error querying database:", error);
