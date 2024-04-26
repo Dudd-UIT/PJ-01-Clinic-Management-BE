@@ -7,37 +7,50 @@ class DoctorController {
     try {
       const sqlQuery = "SELECT * FROM BACSI";
       const doctors = await db.executeQuery(sqlQuery);
-
+      
       const formattedDoctors = doctors.map((doctor) => {
-        const [
-          mabs,
-          matk,
-          cccd,
-          hoTen,
-          trinhDo,
-          gioiTinh,
-          sdt,
-          ngaySinh,
-          diaChi,
-          chuyenKhoa,
-        ] = doctor;
+        doctor.NGAYSINH = new Date(doctor.NGAYSINH);
+        return doctor;
+      })
+      // const formattedDoctors = doctors.map((doctor) => {
+      //   const [
+      //     mabs,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     trinhDo,
+      //     gioiTinh,
+      //     sdt,
+      //     ngaySinh,
+      //     diaChi,
+      //     chuyenKhoa,
+      //   ] = doctor;
 
-        const formattedNgaySinh = new Date(ngaySinh);
+      //   const formattedNgaySinh = new Date(ngaySinh);
 
-        return [
-          mabs,
-          matk,
-          cccd,
-          hoTen,
-          trinhDo,
-          gioiTinh,
-          sdt,
-          formattedNgaySinh,
-          diaChi,
-          chuyenKhoa,
-        ];
-      });
-      setTimeout(() => res.send(formattedDoctors), 1000);
+      //   return {
+      //     mabs,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     trinhDo,
+      //     gioiTinh,
+      //     sdt,
+      //     formattedNgaySinh,
+      //     diaChi,
+      //     chuyenKhoa,
+      //   };
+      // });
+
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: formattedDoctors,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
