@@ -2,7 +2,7 @@ const db = require("../../config/db");
 const oracledb = require("oracledb");
 
 class DoctorController {
-  // GET /doctor/
+  // GET /bacsi/
   async index(req, res) {
     try {
       const sqlQuery = "SELECT * FROM BACSI";

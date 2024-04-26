@@ -8,11 +8,11 @@ const donthuocRouter = require('./donthuoc')
 function route(app) {
     app.use('/', siteRouter)
 
-    app.use('/patient', patientRouter)
+    app.use('/benhnhan', patientRouter)
 
-    app.use('/doctor', doctorRouter)
+    app.use('/bacsi', doctorRouter)
 
-    app.use('/service', dichvuRouter)
+    app.use('/dichvu', dichvuRouter)
 
     app.use('/phieukham', phieukhamRouter)
 

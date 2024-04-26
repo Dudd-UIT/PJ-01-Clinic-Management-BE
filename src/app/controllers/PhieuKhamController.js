@@ -37,10 +37,16 @@ class PhieuKhamController {
       // Xử lý kết quả trả về
       res
         .status(200)
-        .json({ message: "Data PHIEUKHAM, HOADON inserted successfully" });
+        .json({ 
+          errcode: 0,
+          message: "Thêm phiếu khám và hóa đơn thành công" 
+        });
     } catch (error) {
       console.error("Error calling procedure:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ 
+        errcode: -1,
+        message: "Internal Server Error" 
+      });
     }
   }
 
