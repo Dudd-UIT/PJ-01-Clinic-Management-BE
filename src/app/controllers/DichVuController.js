@@ -3,7 +3,7 @@ const db = require("../../config/db");
 const oracledb = require("oracledb");
 
 class DichVuController {
-  // GET /service/
+  // GET /dichvu/
 
   async index(req, res) {
     try {
