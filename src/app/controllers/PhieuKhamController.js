@@ -116,9 +116,9 @@ class PhieuKhamController {
     const { maBN, maBS, maHD, dichVu, ngayKham, lyDoKham, ...others } =
       req.body;
     try {
-      const sqlQuery = ` INSERT INTO PHIEUKHAM (MAPK, MABN, MADVK, MABSC, MAPHONG, MAHD, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, STT, HUYETAP, LYDOKHAM, CHIEUCAO, CANNANG, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN)
-      VALUES (SEQ11_MAPK.NEXTVAL, :PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_LYDO, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_TINHTRANG, :PAR_KETLUAN)
-      RETURN MAPK INTO :ids`;
+      const sqlQuery = ` BEGIN
+        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :MAPK_OUT);
+      END; `;
 
       const bindVars = {
         PAR_MABN: maBN,
@@ -137,7 +137,7 @@ class PhieuKhamController {
         PAR_TRIEUCHUNGBENH: null,
         PAR_TINHTRANG: null,
         PAR_KETLUAN: null,
-        ids : {type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        MAPK_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
@@ -146,7 +146,7 @@ class PhieuKhamController {
       res.status(200).json({
         errcode: 0,
         message: "Thêm phiếu khám thành công",
-        MAPK: result.outBinds.ids[0],
+        MAPK: result.outBinds.MAPK_OUT,
       });
     } catch (error) {
       console.error(error);
