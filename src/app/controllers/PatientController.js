@@ -4,7 +4,7 @@ const { format } = require("date-fns");
 const { DateTime2 } = require("mssql");
 
 class PatientController {
-  // GET /patient/
+  // GET /benhnhan/
   async index(req, res) {
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
@@ -13,7 +13,7 @@ class PatientController {
       const formattedPatients = patients.map((patient) => {
         patient.NGAYSINH = new Date(patient.NGAYSINH);
         return patient;
-      })
+      });
 
       // const formattedPatients = patients.map((patient) => {
       //   const [
@@ -60,7 +60,7 @@ class PatientController {
     }
   }
 
-  // POST /patient/store
+  // POST /benhnhan/insert
   async store(req, res) {
     const {
       hoTen,
@@ -79,7 +79,7 @@ class PatientController {
 
       const sqlQuery = `
                 BEGIN
-                    INSERT_BENHNHAN(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung);
+                    INSERT_BENHNHAN(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung, :out_mabn);
                 END;`;
 
       const bindVars = {
@@ -91,15 +91,22 @@ class PatientController {
         p_diachi: diaChi,
         p_tiensubenh: tienSuBenh,
         p_diung: diUng,
+        out_mabn: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
 
       // Xử lý kết quả trả về
-      res.status(200).json({ message: "Data BENHNHAN inserted successfully" });
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm bệnh nhân mới thành công",
+        MABN: result.outBinds.out_mabn,
+      });
     } catch (error) {
-      console.error("Error calling procedure:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
     }
   }
 }
