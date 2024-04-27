@@ -1,52 +1,66 @@
 const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
+const { DateTime2 } = require("mssql");
 
 class PatientController {
-  // GET /patient/
+  // GET /benhnhan/
   async index(req, res) {
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const patients = await db.executeQuery(sqlQuery);
 
       const formattedPatients = patients.map((patient) => {
-        const [
-          mabn,
-          matk,
-          cccd,
-          hoTen,
-          ngaySinh,
-          gioiTinh,
-          sdt,
-          diaChi,
-          tienSuBenh,
-          diUng,
-        ] = patient;
-
-        const formattedNgaySinh = new Date(ngaySinh);
-
-        return [
-          mabn,
-          matk,
-          cccd,
-          hoTen,
-          formattedNgaySinh,
-          gioiTinh,
-          sdt,
-          diaChi,
-          tienSuBenh,
-          diUng,
-        ];
+        patient.NGAYSINH = new Date(patient.NGAYSINH);
+        return patient;
       });
 
-      setTimeout(() => res.send(formattedPatients), 1000);
+      // const formattedPatients = patients.map((patient) => {
+      //   const [
+      //     mabn,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     ngaySinh,
+      //     gioiTinh,
+      //     sdt,
+      //     diaChi,
+      //     tienSuBenh,
+      //     diUng,
+      //   ] = patient;
+
+      //   const formattedNgaySinh = new Date(ngaySinh);
+
+      //   return {
+      //     mabn,
+      //     matk,
+      //     cccd,
+      //     hoTen,
+      //     formattedNgaySinh,
+      //     gioiTinh,
+      //     sdt,
+      //     diaChi,
+      //     tienSuBenh,
+      //     diUng,
+      //   };
+      // });
+
+      setTimeout(
+        () =>
+          res.send({
+            errcode: 0,
+            message: "Successful",
+            data: formattedPatients,
+          }),
+        1000
+      );
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
-  // POST /patient/store
+  // POST /benhnhan/insert
   async store(req, res) {
     const {
       hoTen,
@@ -56,25 +70,16 @@ class PatientController {
       cccd,
       soDienThoai,
       diUng,
-      chuThich,
+      tienSuBenh,
       ...others
     } = req.body;
-    console.log(
-      hoTen,
-      gioiTinh,
-      diaChi,
-      ngaySinh,
-      cccd,
-      soDienThoai,
-      diUng,
-      chuThich
-    );
+
     try {
       const formattedNgaySinh = new Date(ngaySinh);
 
       const sqlQuery = `
                 BEGIN
-                    INSERT_BENHNHAN(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung);
+                    INSERT_BENHNHAN(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung, :out_mabn);
                 END;`;
 
       const bindVars = {
@@ -84,46 +89,25 @@ class PatientController {
         p_gioitinh: gioiTinh,
         p_sdt: soDienThoai,
         p_diachi: diaChi,
-        p_tiensubenh: chuThich,
+        p_tiensubenh: tienSuBenh,
         p_diung: diUng,
+        out_mabn: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
-      console.log(result);
+
       // Xử lý kết quả trả về
-      res.status(200).json({ message: "Data BENHNHAN inserted successfully" });
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm bệnh nhân mới thành công",
+        MABN: result.outBinds.out_mabn,
+      });
     } catch (error) {
-      console.error("Error calling procedure:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
     }
-
-    // try {
-    //     const formattedNgaySinh = new Date(ngaySinh);
-
-    //     const sqlQuery = `
-    //         BEGIN
-    //             INSERT_PHIEUKHAM(:p_cccd, :p_hoten, :p_ngaysinh, :p_gioitinh, :p_sdt, :p_diachi, :p_tiensubenh, :p_diung);
-    //         END;`;
-
-    //     const bindVars = {
-    //         p_cccd: cccd,
-    //         p_hoten: hoTen,
-    //         p_ngaysinh: formattedNgaySinh,
-    //         p_gioitinh: gioiTinh,
-    //         p_sdt: soDienThoai,
-    //         p_diachi: diaChi,
-    //         p_tiensubenh: chuThich,
-    //         p_diung: diUng,
-    //     };
-
-    //     const result = await db.executeProcedure(sqlQuery, bindVars);
-    //     console.log(result)
-    //     // Xử lý kết quả trả về
-    //     res.status(200).json({ message: "Data PHIEUKHAM inserted successfully" });
-    // } catch (error) {
-    //     console.error('Error calling procedure:', error);
-    //     res.status(500).json({ error: 'Internal Server Error' });
-    // }
   }
 }
 

@@ -1,7 +1,7 @@
 const oracledb = require("oracledb");
 
 const dbConfig = {
-  user: "QUANLYPHONGKHAM",
+  user: "QUANLYPHONGKHAM2",
   password: "Admin123",
   connectString: "localhost/orcl",
 };
@@ -21,7 +21,11 @@ async function connect() {
 // Thực thi truy vấn SQL
 async function executeQuery(sqlQuery) {
   try {
-    const result = await connection.execute(sqlQuery);
+    const result = await connection.execute(
+      sqlQuery,
+      [],
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
     return result.rows;
   } catch (error) {
     console.error("Oracle DB query error:", error);
@@ -43,5 +47,5 @@ async function executeProcedure(procedureName, bindVars) {
 module.exports = {
   connect,
   executeQuery,
-  executeProcedure
+  executeProcedure,
 };

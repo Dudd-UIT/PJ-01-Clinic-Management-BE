@@ -17,7 +17,6 @@ class ServiceController {
 
         return [madv, maldv, tendv, formattedGiaDV];
       });
-      console.log(services);
       setTimeout(() => res.send(services), 1000);
     } catch (error) {
       console.error("Error querying database:", error);
