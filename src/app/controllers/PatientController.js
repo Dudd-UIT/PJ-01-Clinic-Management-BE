@@ -15,36 +15,6 @@ class PatientController {
         return patient;
       });
 
-      // const formattedPatients = patients.map((patient) => {
-      //   const [
-      //     mabn,
-      //     matk,
-      //     cccd,
-      //     hoTen,
-      //     ngaySinh,
-      //     gioiTinh,
-      //     sdt,
-      //     diaChi,
-      //     tienSuBenh,
-      //     diUng,
-      //   ] = patient;
-
-      //   const formattedNgaySinh = new Date(ngaySinh);
-
-      //   return {
-      //     mabn,
-      //     matk,
-      //     cccd,
-      //     hoTen,
-      //     formattedNgaySinh,
-      //     gioiTinh,
-      //     sdt,
-      //     diaChi,
-      //     tienSuBenh,
-      //     diUng,
-      //   };
-      // });
-
       setTimeout(
         () =>
           res.send({
