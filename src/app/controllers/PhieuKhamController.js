@@ -160,7 +160,7 @@ class PhieuKhamController {
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, pk.TRANGTHAITH, hd.TTTT as TTTTPK,
+      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT as TTTTPK,
       hd1.THANHTIEN AS TIENTHUOC, hd1.TTTT AS TTTTDTH, 
       hd2.THANHTIEN AS TIENCLS, hd2.TTTT AS TTTTCLS
       FROM PHIEUKHAM pk
@@ -185,8 +185,7 @@ class PhieuKhamController {
         errcode: 0,
         message: "Successful",
         data: formattedDSDKKham,
-      })
-
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
