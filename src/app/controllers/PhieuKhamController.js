@@ -35,17 +35,15 @@ class PhieuKhamController {
       const result = await db.executeProcedure(sqlQuery, bindVars);
 
       // Xử lý kết quả trả về
-      res
-        .status(200)
-        .json({ 
-          errcode: 0,
-          message: "Thêm phiếu khám và hóa đơn thành công" 
-        });
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm phiếu khám và hóa đơn thành công",
+      });
     } catch (error) {
       console.error("Error calling procedure:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error" 
+        message: "Internal Server Error",
       });
     }
   }
@@ -113,6 +111,52 @@ class PhieuKhamController {
     }
   }
 
+  // POST /phieukham/insert-just-pk
+  async insertIustPK(req, res) {
+    const { maBN, maBS, maHD, dichVu, ngayKham, lyDoKham, ...others } =
+      req.body;
+    try {
+      const sqlQuery = ` BEGIN
+        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :MAPK_OUT);
+      END; `;
+
+      const bindVars = {
+        PAR_MABN: maBN,
+        PAR_MADV: dichVu,
+        PAR_MABS: maBS,
+        PAR_MAHD: maHD,
+        PAR_MAPHONG: Math.floor(Math.random() * 4) + 1,
+        PAR_NGAY_KHAM: new Date(ngayKham),
+        PAR_NGAY_DAT_LICH: null,
+        PAR_TRANGTHAI: "Dang thuc hien",
+        PAR_STT: Math.floor(Math.random() * 20) + 1,
+        PAR_HUYETAP: null,
+        PAR_CHIEUCAO: null,
+        PAR_CANNANG: null,
+        PAR_LYDO: lyDoKham,
+        PAR_TRIEUCHUNGBENH: null,
+        PAR_TINHTRANG: null,
+        PAR_KETLUAN: null,
+        MAPK_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm phiếu khám thành công",
+        MAPK: result.outBinds.MAPK_OUT,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
+    }
+  }
+
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
@@ -136,46 +180,6 @@ class PhieuKhamController {
         itemDKKham.NGAYSINH = new Date(itemDKKham.NGAYSINH);
         return itemDKKham;
       });
-
-      // const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
-      //   const [
-      //     MAPK,
-      //     NGAYKHAM,
-      //     STT,
-      //     TENBN,
-      //     NGAYSINH,
-      //     GIOITINH,
-      //     SDT,
-      //     TENBS,
-      //     TRINHDO,
-      //     TENDV,
-      //     TRANGTHAIKHAM,
-      //     TTTTPK,
-      //     TIENTHUOC,
-      //     TTTTDTH,
-      //     TIENCLS,
-      //     TTTTCLS,
-      //   ] = itemDKKham;
-
-      //   return {
-      //     MAPK,
-      //     NGAYKHAM: new Date(NGAYKHAM),
-      //     STT,
-      //     TENBN,
-      //     NGAYSINH: new Date(NGAYSINH),
-      //     GIOITINH,
-      //     SDT,
-      //     TENBS,
-      //     TRINHDO,
-      //     TENDV,
-      //     TRANGTHAIKHAM,
-      //     TTTTPK,
-      //     TIENTHUOC,
-      //     TTTTDTH,
-      //     TIENCLS,
-      //     TTTTCLS,
-      //   };
-      // });
 
       setTimeout(
         () =>
