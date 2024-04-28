@@ -181,15 +181,12 @@ class PhieuKhamController {
         return itemDKKham;
       });
 
-      setTimeout(
-        () =>
-          res.send({
-            errcode: 0,
-            message: "Successful",
-            data: formattedDSDKKham,
-          }),
-        1000
-      );
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: formattedDSDKKham,
+      })
+
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -222,7 +219,7 @@ class PhieuKhamController {
 
       setTimeout(
         () =>
-          res.send({
+          res.status(200).send({
             errcode: 0,
             message: "Successfull",
             data: objCtpk,
@@ -248,7 +245,7 @@ class PhieuKhamController {
 
       // xử lý trường hợp nhận được mảng rỗng
       if (benhList.length === 0) {
-        res.send({
+        res.status(500).send({
           errcode: 1,
           message: "No data found: DS Benh rong or Invalid MAPK",
           data: benhList,
@@ -258,7 +255,7 @@ class PhieuKhamController {
 
       setTimeout(
         () =>
-          res.send({
+          res.status(200).send({
             errcode: 0,
             message: "Successful",
             data: benhList,

@@ -30,7 +30,7 @@ class DonThuocController {
 
       setTimeout(
         () =>
-          res.send({
+          res.status(200).send({
             errcode: 0,
             message: "Successful",
             data: thuocList,
