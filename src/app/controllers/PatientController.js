@@ -9,7 +9,6 @@ class PatientController {
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const patients = await db.executeQuery(sqlQuery);
-
       const formattedPatients = patients.map((patient) => {
         patient.NGAYSINH = new Date(patient.NGAYSINH);
         return patient;
