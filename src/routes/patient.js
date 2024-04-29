@@ -5,8 +5,10 @@ const patientController = require('../app/controllers/PatientController')
 
 // /customer/...
 
-router.post('/insert', patientController.store)
 router.get('/', patientController.index)
+router.post('/insert', patientController.store)
+router.get('/:id', patientController.getByID)
+
 
 // router.get('/:id/edit', customerController.edit)
 // router.post('/handle-form-actions', customerController.handleFormActions)

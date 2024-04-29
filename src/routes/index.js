@@ -1,29 +1,31 @@
-const siteRouter = require('./site')
-const patientRouter = require('./patient')
-const doctorRouter = require('./doctor')
-const dichvuRouter = require('./dichvu')
-const phieukhamRouter = require('./phieukham')
-const donthuocRouter = require('./donthuoc')
-const loginRouter = require('./login')
-const hoadonRouter = require('./hoadon')
+const siteRouter = require("./site");
+const patientRouter = require("./patient");
+const doctorRouter = require("./doctor");
+const dichvuRouter = require("./dichvu");
+const phieukhamRouter = require("./phieukham");
+const donthuocRouter = require("./donthuoc");
+const loginRouter = require("./login");
+const hoadonRouter = require("./hoadon");
+const clsRouter = require("./canlamsang");
 
 function route(app) {
-    app.use('/', siteRouter)
+  app.use("/", siteRouter);
 
-    app.use('/login', loginRouter)
+  app.use("/login", loginRouter);
 
-    app.use('/benhnhan', patientRouter)
+  app.use("/benhnhan", patientRouter);
 
-    app.use('/bacsi', doctorRouter)
+  app.use("/bacsi", doctorRouter);
 
-    app.use('/dichvu', dichvuRouter)
+  app.use("/dichvu", dichvuRouter);
 
-    app.use('/phieukham', phieukhamRouter)
+  app.use("/phieukham", phieukhamRouter);
 
-    app.use('/donthuoc', donthuocRouter)
+  app.use("/donthuoc", donthuocRouter);
 
-    app.use('/hoadon', hoadonRouter)
+  app.use("/hoadon", hoadonRouter);
 
+  app.use("/cls", clsRouter);
 }
 
-module.exports = route
+module.exports = route;
