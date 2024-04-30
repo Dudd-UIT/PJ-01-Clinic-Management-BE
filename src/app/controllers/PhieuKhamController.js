@@ -160,7 +160,8 @@ class PhieuKhamController {
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT as TTTTPK,
+      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, 
+      hd.MAHD as MAHDPK, hd.TTTT as TTTTPK,
       hd1.THANHTIEN AS TIENTHUOC, hd1.TTTT AS TTTTDTH, 
       hd2.THANHTIEN AS TIENCLS, hd2.TTTT AS TTTTCLS
       FROM PHIEUKHAM pk
@@ -267,6 +268,42 @@ class PhieuKhamController {
         errcode: 2,
         message: "Internal Server Error",
       });
+    }
+  }
+
+  // GET /phieukham/dspk/:id-hoa-don
+  async fetchPKbyIdHD(req, res) {
+    try {
+      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN
+      FROM PHIEUKHAM pk, HOADON hd, DICHVU dv
+      WHERE pk.MAHD = hd.MAHD
+      AND pk.MADVK = dv.MADV
+      AND hd.MAHD = ${req.params.id}`;
+
+      let pkList = await db.executeQuery(sqlQuery);
+
+      // làm lại khúc ni
+      if (pkList.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MAHD",
+          data: pkList,
+        });
+        return;
+      }
+
+      setTimeout(
+        () =>
+          res.status(200).send({
+            errcode: 0,
+            message: "Successfull",
+            data: pkList,
+          }),
+        1000
+      );
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

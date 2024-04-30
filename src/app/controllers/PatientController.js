@@ -33,6 +33,43 @@ class PatientController {
     }
   }
 
+  // GET /benhnhan/:id
+  async getByID(req, res) {
+    try {
+      const sqlQuery = `SELECT MABN, MATK, CCCD, HOTEN, NGAYSINH, GIOITINH, SDT, DIACHI, TIENSUBENH, DIUNG 
+      FROM BENHNHAN WHERE MABN = ${req.params.id}`;
+      const patients = await db.executeQuery(sqlQuery);
+
+      if (patients.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MABN",
+          data: patients,
+        });
+        return;
+      }
+
+      const selectedPatient = patients[0];
+      selectedPatient.NGAYSINH = new Date(selectedPatient.NGAYSINH)
+
+      setTimeout(
+        () =>
+          res.status(200).send({
+            errcode: 0,
+            message: "Successful",
+            data: selectedPatient,
+          }),
+        1000
+      );
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ 
+        errcode: -1,
+        message: "Internal Server Error"
+      });
+    }
+  }
+
   // POST /benhnhan/insert
   async store(req, res) {
     const {

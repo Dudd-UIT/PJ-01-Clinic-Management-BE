@@ -39,6 +39,44 @@ class HoaDonController {
       });
     }
   }
+
+  // GET /hoadon/dshd/id-phieu-kham
+  async fetchHDbyID(req, res) {
+    try {
+      const sqlQuery = `SELECT DISTINCT hd.MAHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.HOTEN as TENLT
+      FROM HOADON hd, PHIEUKHAM pk, KETQUADICHVUCLS cls, DONTHUOC dth, LOAIHD lhd, LETAN lt
+      WHERE (hd.MAHD = pk.MAHD
+      OR (pk.MAPK = dth.MAPK AND hd.MAHD = dth.MAHD)
+      OR (pk.MAPK = cls.MAPK AND hd.MAHD = cls.MAHD) )
+      AND hd.MALOAIHD = lhd.MALOAIHD
+      AND hd.MALT = lt.MALT
+      AND pk.MAPK = ${req.params.id}`;
+
+      const hdList = await db.executeQuery(sqlQuery);
+
+      if (hdList.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: Invalid MAPK",
+          data: hdList,
+        });
+        return;
+      }
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: hdList,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
+    }
+  }
 }
 
 module.exports = new HoaDonController();

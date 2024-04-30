@@ -18,18 +18,19 @@ function route(app) {
 
     app.use('/account', loginRouter)
 
-    app.use('/benhnhan', patientRouter)
+  app.use("/benhnhan", patientRouter);
 
-    app.use('/bacsi', doctorRouter)
+  app.use("/bacsi", doctorRouter);
 
-    app.use('/dichvu', dichvuRouter)
+  app.use("/dichvu", dichvuRouter);
 
-    app.use('/phieukham', phieukhamRouter)
+  app.use("/phieukham", phieukhamRouter);
 
-    app.use('/donthuoc', donthuocRouter)
+  app.use("/donthuoc", donthuocRouter);
 
-    app.use('/hoadon', hoadonRouter)
+  app.use("/hoadon", hoadonRouter);
 
+  app.use("/cls", clsRouter);
 }
 
-module.exports = route
+module.exports = route;

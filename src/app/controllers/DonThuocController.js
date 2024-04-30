@@ -3,7 +3,7 @@ const oracledb = require("oracledb");
 const { format } = require("date-fns");
 
 class DonThuocController {
-  // GET /ds-thuoc/:id
+  // GET /ds-thuoc/:id-phieu-kham
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `
@@ -40,7 +40,7 @@ class DonThuocController {
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ 
-        errcode: 2,
+        errcode: -1,
         message: "Internal Server Error",
       });
     }
