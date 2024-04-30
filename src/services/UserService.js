@@ -1,5 +1,8 @@
 const db = require("../config/db");
 const bcrypt = require("bcryptjs");
+require('dotenv').config();
+const {getGroupWithRoles} = require('./JWTService')
+const {createJWT} = require('../middleware/JWTAction')
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -23,6 +26,16 @@ const handleUserLogin = async (rawData) => {
       console.log(">>>>> Found user with username", username);
       let isCorrectPassword = checkPassword(password, user[0].PASSWORD);
       if (isCorrectPassword === true) {
+
+        let groupWithRoles = await getGroupWithRoles(user);
+        console.log(">>>>>> groupWithRoles", groupWithRoles)
+        let payload = {
+          username: user[0].USERNAME,
+          groupWithRoles,
+          expiresIn: process.env.JWT_EXPIRES_IN
+        }
+        let token = createJWT(payload);
+
         console.log(
           ">>>>> Login user with username:",
           username,
@@ -32,7 +45,10 @@ const handleUserLogin = async (rawData) => {
         return {
           errcode: 0,
           message: "OK",
-          data: "",
+          data: {
+            access_token: token,
+            groupWithRoles
+          }
         };
       }
     }

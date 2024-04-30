@@ -6,11 +6,17 @@ const phieukhamRouter = require('./phieukham')
 const donthuocRouter = require('./donthuoc')
 const loginRouter = require('./login')
 const hoadonRouter = require('./hoadon')
+const { checkUserJWT, checkUserPermission } = require('../middleware/JWTAction')
+const express = require("express");
+const router = express.Router();
+
 
 function route(app) {
+    app.use('*', checkUserJWT, checkUserPermission)
+
     app.use('/', siteRouter)
 
-    app.use('/login', loginRouter)
+    app.use('/account', loginRouter)
 
     app.use('/benhnhan', patientRouter)
 

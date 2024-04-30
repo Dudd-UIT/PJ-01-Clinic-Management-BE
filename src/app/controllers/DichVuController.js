@@ -4,16 +4,16 @@ const db = require("../../config/db");
 const oracledb = require("oracledb");
 
 class DichVuController {
-  // GET /dichvu/
+  // GET /dichvu/getAll
 
-  async index(req, res) {
+  async getAll(req, res) {
     try {
       const sqlQuery = "SELECT * FROM DICHVU";
       const dichvus = await db.executeQuery(sqlQuery);
 
       setTimeout(
         () =>
-          res.status(200).send({
+          res.status(200).json({
             errcode: 0,
             message: "Successful",
             data: dichvus,
@@ -22,7 +22,11 @@ class DichVuController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ 
+        errcode: -1,
+        message: "Error from server",
+        data: [],
+       });
     }
   }
 }

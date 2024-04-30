@@ -14,11 +14,9 @@ class SiteController {
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
-      console.log(result)
-      console.log(result.length)
+
       if (result) {
         const totalRevenue = result.rows;
-        console.log(totalRevenue[0][0])
         res.json({ totalRevenue });
       } else {
         res.status(404).json({ error: 'Customer not found or no revenue data' });
@@ -38,7 +36,6 @@ class SiteController {
       };
 
       const result = await db.executeProcedure(procedureName, bindVars);
-      console.log(result)
       if (result && result.returnValue === 0) {
         console.log("SALARY UPDATED");
       } else {

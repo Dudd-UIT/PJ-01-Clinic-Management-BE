@@ -5,6 +5,7 @@ const { DateTime2 } = require("mssql");
 
 class HoaDonController {
   // POST /hoadon/insert
+  
   async insert(req, res) {
     const { maLT, maLHD, tttt, ...others } = req.body;
     try {
