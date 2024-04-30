@@ -1,22 +1,24 @@
-const siteRouter = require('./site')
-const patientRouter = require('./patient')
-const doctorRouter = require('./doctor')
-const dichvuRouter = require('./dichvu')
-const phieukhamRouter = require('./phieukham')
-const donthuocRouter = require('./donthuoc')
-const loginRouter = require('./login')
-const hoadonRouter = require('./hoadon')
-const { checkUserJWT, checkUserPermission } = require('../middleware/JWTAction')
-const express = require("express");
-const router = express.Router();
+const siteRouter = require("./site");
+const patientRouter = require("./patient");
+const doctorRouter = require("./doctor");
+const dichvuRouter = require("./dichvu");
+const phieukhamRouter = require("./phieukham");
+const donthuocRouter = require("./donthuoc");
+const loginRouter = require("./login");
+const hoadonRouter = require("./hoadon");
+const clsRouter = require('./canlamsang')
+const {
+  checkUserJWT,
+  checkUserPermission,
+} = require("../middleware/JWTAction");
 
 
 function route(app) {
-    app.use('*', checkUserJWT, checkUserPermission)
+  app.use("*", checkUserJWT, checkUserPermission);
 
-    app.use('/', siteRouter)
+  app.use("/", siteRouter);
 
-    app.use('/account', loginRouter)
+  app.use("/account", loginRouter);
 
   app.use("/benhnhan", patientRouter);
 

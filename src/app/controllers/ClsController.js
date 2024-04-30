@@ -3,7 +3,7 @@ const oracledb = require("oracledb");
 const { format } = require("date-fns");
 
 class ClsController {
-  // GET /ds-cls/:id-phieu-kham
+  // GET /ds-cls/:id
   async fetchClsById(req, res) {
     try {
       const sqlQuery = `SELECT cls.MAKQ, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT
@@ -43,7 +43,7 @@ class ClsController {
     }
   }
 
-  // GET /all-cls/
+  // GET /getAll
   async fetchAllCls(req, res) {
     try {
       const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBSTH, bs.TRINHDO, dv.TENDV, cls.TRANGTHAITH, hd.TTTT
