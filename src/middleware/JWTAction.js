@@ -9,7 +9,7 @@ const createJWT = (payload) => {
   let token = null;
   try {
     token = jwt.sign(payload, key, {
-      expiresIn: 60000000
+      expiresIn: process.env.JWT_EXPIRES_IN
     });
   } catch (error) {
     console.log(error);
