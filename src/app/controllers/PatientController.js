@@ -4,8 +4,8 @@ const { format } = require("date-fns");
 const { DateTime2 } = require("mssql");
 
 class PatientController {
-  // GET /benhnhan/
-  async index(req, res) {
+  // GET /benhnhan/getAll
+  async getAll(req, res) {
     try {
       const sqlQuery = "SELECT * FROM BENHNHAN";
       const patients = await db.executeQuery(sqlQuery);
@@ -25,7 +25,11 @@ class PatientController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ 
+        errcode: -1,
+        message: "Error from server",
+        data: [],
+       });
     }
   }
 

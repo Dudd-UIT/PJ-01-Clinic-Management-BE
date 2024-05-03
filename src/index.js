@@ -1,46 +1,52 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
-const cors = require('cors');
 const morgan = require('morgan');
-
 const db = require('./config/db');
 const route = require('./routes');
-
 const app = express();
-const port = 3001;
+const cookieParser = require('cookie-parser')
+
+const port = process.env.PORT;
 
 // Custom CORS middleware
+//config cors
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', process.env.REACT_URL);
 
+    // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     if (req.method === 'OPTIONS') {
-        return res.sendStatus(200); // Respond with 200 OK for OPTIONS requests
+        return res.sendStatus(200);
     }
-
+    // Pass to next layer of middleware
     next();
 });
-
 
 // HTTP logger
 app.use(morgan('dev'));
 
-// Connect to Oracle database (user C##DOANDU)
+// Connect to Oracle database (user C##QUANLYPHONGKHAM)
 db.connect();
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Parse incoming requests with JSON payloads
+// config body-parser
 app.use(express.json());
-
-// Parse incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: true }));
+
+//config cookie-parser
+app.use(cookieParser());
 
 // Initialize routes
 route(app);

@@ -6,12 +6,19 @@ const phieukhamRouter = require("./phieukham");
 const donthuocRouter = require("./donthuoc");
 const loginRouter = require("./login");
 const hoadonRouter = require("./hoadon");
-const clsRouter = require("./canlamsang");
+const clsRouter = require('./canlamsang')
+const {
+  checkUserJWT,
+  checkUserPermission,
+} = require("../middleware/JWTAction");
+
 
 function route(app) {
+  app.use("*", checkUserJWT, checkUserPermission);
+
   app.use("/", siteRouter);
 
-  app.use("/login", loginRouter);
+  app.use("/account", loginRouter);
 
   app.use("/benhnhan", patientRouter);
 
