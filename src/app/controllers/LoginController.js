@@ -1,12 +1,14 @@
 const { handleUserLogin } = require('../../services/UserService');
 
 
-// POST /account/login
+// POST /login/login
 const login = async (req, res) => {
     try {
         let Data = await handleUserLogin(req.body)
 
-        res.cookie('jwt', Data.data.access_token, { httpOnly: true, maxAge: process.env.JWT_EXPIRES_IN})
+        if(Data && Data.data && Data.data.access_token) {
+            res.cookie('jwt', Data.data.access_token, { httpOnly: true, maxAge: process.env.JWT_EXPIRES_IN})
+        }
 
         return res.status(200).json({
             errcode: Data.errcode,

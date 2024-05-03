@@ -37,9 +37,7 @@ class SiteController {
 
       const result = await db.executeProcedure(procedureName, bindVars);
       if (result && result.returnValue === 0) {
-        console.log("SALARY UPDATED");
       } else {
-        console.log("SALARY NOT UPDATED");
       }
     } catch (error) {
       console.error("Error calling stored procedure:", error);
@@ -102,7 +100,6 @@ class SiteController {
       //     diUng
       //   ];
       // });
-      console.log(customers)
       setTimeout(() => res.send(customers), 1000);
     } catch (error) {
       console.error("Error querying database:", error);

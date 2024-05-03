@@ -5,6 +5,7 @@ const dichvuRouter = require("./dichvu");
 const phieukhamRouter = require("./phieukham");
 const donthuocRouter = require("./donthuoc");
 const loginRouter = require("./login");
+const accountRouter = require("./account");
 const hoadonRouter = require("./hoadon");
 const clsRouter = require('./canlamsang')
 const {
@@ -18,7 +19,9 @@ function route(app) {
 
   app.use("/", siteRouter);
 
-  app.use("/account", loginRouter);
+  app.use("/login", loginRouter);
+
+  app.use("/account", accountRouter);
 
   app.use("/benhnhan", patientRouter);
 
