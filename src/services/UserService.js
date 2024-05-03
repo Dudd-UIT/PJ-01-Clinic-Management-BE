@@ -23,36 +23,28 @@ const handleUserLogin = async (rawData) => {
     let user = await db.executeQuery(sqlQuery);
     
     if (user.length > 0) {
-      console.log(">>>>> Found user with username", username);
       let isCorrectPassword = checkPassword(password, user[0].PASSWORD);
       if (isCorrectPassword === true) {
 
         let groupWithRoles = await getGroupWithRoles(user);
-        console.log(">>>>>> groupWithRoles", groupWithRoles)
+
         let payload = {
           username: user[0].USERNAME,
           groupWithRoles,
-          expiresIn: process.env.JWT_EXPIRES_IN
         }
         let token = createJWT(payload);
 
-        console.log(
-          ">>>>> Login user with username:",
-          username,
-          "password:",
-          password
-        );
         return {
           errcode: 0,
           message: "OK",
           data: {
             access_token: token,
-            groupWithRoles
+            groupWithRoles,
+            username: user[0].USERNAME
           }
         };
       }
     }
-    console.log(">>>> No user with username:", username, "password:", password);
     return {
       errcode: 1,
       message: "Your username or password is incorrect!",

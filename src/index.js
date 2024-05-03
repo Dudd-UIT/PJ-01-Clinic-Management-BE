@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const db = require('./config/db');
 const route = require('./routes');
 const app = express();
+var cors = require('cors')
 const cookieParser = require('cookie-parser')
 
 const port = process.env.PORT;
@@ -31,6 +32,7 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
 
 // HTTP logger
 app.use(morgan('dev'));

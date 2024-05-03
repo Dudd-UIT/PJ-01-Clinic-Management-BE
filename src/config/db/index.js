@@ -1,9 +1,10 @@
 const oracledb = require("oracledb");
+require('dotenv').config();
 
 const dbConfig = {
-  user: "C##QUANLYPHONGKHAM",
-  password: "Admin123",
-  connectString: "localhost/orcl",
+  user: process.env.USER_DB,
+  password: process.env.PASSWORD_DB,
+  connectString: process.env.CONNECT_STRING_DB,
 };
 
 let connection;
