@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 
-const nonSecurePaths = ["/login/login"];
+const nonSecurePaths = ["/account/login", "/account/logout"];
 
 const createJWT = (payload) => {
   let key = process.env.JWT_SECRET;
@@ -38,7 +38,6 @@ const extractToken = (req) => {
 }
 
 const checkUserJWT = (req, res, next) => {
-  console.log(">>>>>>> checkUserJWT <<<<<<<<<")
   if (nonSecurePaths.includes(req.originalUrl)) {
     console.log("KHONG CHECK JWT:", req.originalUrl)
     return next();
@@ -49,12 +48,9 @@ const checkUserJWT = (req, res, next) => {
 
   if ((cookies && cookies.jwt) || tokenFromHeader ) {
     let token = (cookies && cookies.jwt) ? cookies.jwt : tokenFromHeader;
-    console.log('>>>> COOKIES', cookies.jwt)
-    console.log('>>>> tokenFromHeader', tokenFromHeader)
 
     let decoded = verifyToken(token);
     if (decoded) {
-      console.log('>>>>> VERIFY THANH CONG <<<<<<')
       req.user = decoded;
       req.token = token;
       next();
@@ -77,8 +73,6 @@ const checkUserJWT = (req, res, next) => {
 };
 
 const checkUserPermission = (req, res, next) => {
-  console.log(">>>>>>> checkUserPermission <<<<<<<<<")
-
   if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/account/getUserAccount') { 
     console.log("KHONG CHECK PERMISSION:", req.originalUrl)
     return next();

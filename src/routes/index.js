@@ -4,7 +4,6 @@ const doctorRouter = require("./doctor");
 const dichvuRouter = require("./dichvu");
 const phieukhamRouter = require("./phieukham");
 const donthuocRouter = require("./donthuoc");
-const loginRouter = require("./login");
 const accountRouter = require("./account");
 const hoadonRouter = require("./hoadon");
 const clsRouter = require('./canlamsang')
@@ -18,8 +17,6 @@ function route(app) {
   app.use("*", checkUserJWT, checkUserPermission);
 
   app.use("/", siteRouter);
-
-  app.use("/login", loginRouter);
 
   app.use("/account", accountRouter);
 
