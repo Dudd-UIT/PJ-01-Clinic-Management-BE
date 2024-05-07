@@ -3,6 +3,73 @@ const oracledb = require("oracledb");
 const { format } = require("date-fns");
 
 class DonThuocController {
+  // POST /donthuoc/insert
+  async insert(req, res) {
+    const { maPK, maLT, ...others } = req.body;
+    try {
+      const sqlQuery = `BEGIN
+      INSERT_DONTHUOC_HOADON(:p_MAPK, :p_MALT, :p_GIADONTHUOC, :p_THOIGIANLAP, :MADT_OUT);
+      END;`;
+
+      const bindVars = {
+        p_MAPK: maPK,
+        p_MALT: maLT,
+        p_GIADONTHUOC: 0,
+        p_THOIGIANLAP: new Date(),
+        MADT_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm hóa đơn và đơn thuốc mới thành công",
+        MADT: result.outBinds.MADT_OUT,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
+    }
+  }
+
+  // POST /donthuoc/insert-ctdt
+  async insertCTDT(req, res) {
+    const { maDT, maThuoc, soLanUong, soLuongUong, totalDosage, lieuDung, ...others } = req.body;
+    try {
+      const sqlQuery = `BEGIN
+      INSERT_CTDT (:PAR_MADT, :PAR_MATHUOC, :PAR_SOLANUONG, :PAR_SOLUONGUONG, :PAR_TRANGTHAI, :PAR_SOLUONGTHUOC, :PAR_GHICHU);      
+      END;`;
+
+      const bindVars = {
+        PAR_MADT: maDT,
+        PAR_MATHUOC: maThuoc,
+        PAR_SOLANUONG: soLanUong,
+        PAR_SOLUONGUONG: soLuongUong,
+        PAR_TRANGTHAI: 'Chưa đặt lịch',
+        PAR_SOLUONGTHUOC: totalDosage,
+        PAR_GHICHU: lieuDung,
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Thêm chi tiết đơn thuốc thành công",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Internal Server Error",
+      });
+    }
+  }
+
   // GET /ds-thuoc/:id-phieu-kham
   async fetchDSThuoc(req, res) {
     try {
@@ -28,18 +95,14 @@ class DonThuocController {
         return;
       }
 
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successful",
-            data: thuocList,
-          }),
-        1000
-      );
+      res.status(200).send({
+        errcode: 0,
+        message: "Successful",
+        data: thuocList,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
         message: "Internal Server Error",
       });

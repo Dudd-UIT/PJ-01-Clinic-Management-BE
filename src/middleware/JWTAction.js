@@ -9,7 +9,7 @@ const createJWT = (payload) => {
   let token = null;
   try {
     token = jwt.sign(payload, key, {
-      expiresIn: process.env.JWT_EXPIRES_IN
+      expiresIn: process.env.JWT_EXPIRES_IN,
     });
   } catch (error) {
     console.log(error);
@@ -31,23 +31,26 @@ const verifyToken = (token) => {
 };
 
 const extractToken = (req) => {
-  if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-    return req.headers.authorization.split(' ')[1];
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.split(" ")[0] === "Bearer"
+  ) {
+    return req.headers.authorization.split(" ")[1];
   }
   return null;
-}
+};
 
 const checkUserJWT = (req, res, next) => {
   if (nonSecurePaths.includes(req.originalUrl)) {
-    console.log("KHONG CHECK JWT:", req.originalUrl)
+    console.log("KHONG CHECK JWT:", req.originalUrl);
     return next();
   }
 
   let cookies = req.cookies;
   let tokenFromHeader = extractToken(req);
 
-  if ((cookies && cookies.jwt) || tokenFromHeader ) {
-    let token = (cookies && cookies.jwt) ? cookies.jwt : tokenFromHeader;
+  if ((cookies && cookies.jwt) || tokenFromHeader) {
+    let token = cookies && cookies.jwt ? cookies.jwt : tokenFromHeader;
 
     let decoded = verifyToken(token);
     if (decoded) {
@@ -73,8 +76,11 @@ const checkUserJWT = (req, res, next) => {
 };
 
 const checkUserPermission = (req, res, next) => {
-  if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/account/getUserAccount') { 
-    console.log("KHONG CHECK PERMISSION:", req.originalUrl)
+  if (
+    nonSecurePaths.includes(req.originalUrl) ||
+    req.originalUrl === "/account/getUserAccount"
+  ) {
+    console.log("KHONG CHECK PERMISSION:", req.originalUrl);
     return next();
   }
 
@@ -92,7 +98,7 @@ const checkUserPermission = (req, res, next) => {
     }
 
     let canAccess = roles.some((item) => item.URL === currentUrl);
-    if (canAccess === true) { 
+    if (canAccess === true) {
       next();
     } else {
       return res.status(403).json({

@@ -7,6 +7,7 @@ const donthuocRouter = require("./donthuoc");
 const accountRouter = require("./account");
 const hoadonRouter = require("./hoadon");
 const clsRouter = require('./canlamsang')
+const thuocRouter = require('./thuoc')
 const {
   checkUserJWT,
   checkUserPermission,
@@ -29,6 +30,8 @@ function route(app) {
   app.use("/phieukham", phieukhamRouter);
 
   app.use("/donthuoc", donthuocRouter);
+
+  app.use("/thuoc", thuocRouter);
 
   app.use("/hoadon", hoadonRouter);
 
