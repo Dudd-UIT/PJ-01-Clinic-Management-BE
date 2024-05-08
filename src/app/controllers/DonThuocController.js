@@ -38,7 +38,7 @@ class DonThuocController {
 
   // POST /donthuoc/insert-ctdt
   async insertCTDT(req, res) {
-    const { maDT, maThuoc, soLanUong, soLuongUong, totalDosage, lieuDung, ...others } = req.body;
+    const { maDT, MATHUOC, SOLANUONG, SOLUONGUONG, SOLUONGTHUOC, GHICHU, ...others } = req.body;
     try {
       const sqlQuery = `BEGIN
       INSERT_CTDT (:PAR_MADT, :PAR_MATHUOC, :PAR_SOLANUONG, :PAR_SOLUONGUONG, :PAR_TRANGTHAI, :PAR_SOLUONGTHUOC, :PAR_GHICHU);      
@@ -46,12 +46,12 @@ class DonThuocController {
 
       const bindVars = {
         PAR_MADT: maDT,
-        PAR_MATHUOC: maThuoc,
-        PAR_SOLANUONG: soLanUong,
-        PAR_SOLUONGUONG: soLuongUong,
+        PAR_MATHUOC: MATHUOC,
+        PAR_SOLANUONG: SOLANUONG,
+        PAR_SOLUONGUONG: SOLUONGUONG,
         PAR_TRANGTHAI: 'Chưa đặt lịch',
-        PAR_SOLUONGTHUOC: totalDosage,
-        PAR_GHICHU: lieuDung,
+        PAR_SOLUONGTHUOC: SOLUONGTHUOC,
+        PAR_GHICHU: GHICHU,
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
@@ -74,7 +74,7 @@ class DonThuocController {
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `
-      SELECT th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABAN, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT
+      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABAN, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT
       FROM DONTHUOC dth, CTDT, THUOC th, LOTHUOC loth, DONVITHUOC dvth, HOADON hd
       WHERE dth.MADT = ctdt.MADT
       AND ctdt.MATHUOC = th.MATHUOC
