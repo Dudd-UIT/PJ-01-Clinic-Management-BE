@@ -19,7 +19,7 @@ const handleUserLogin = async (rawData) => {
   let username = rawData.username;
   let password = rawData.password;
   try {
-    const sqlQuery = `SELECT * FROM TAIKHOAN WHERE USERNAME = '${username}'`;
+    const sqlQuery = `SELECT * FROM TAIKHOAN WHERE USERNAME = '${username}' AND TRANGTHAI = 1`;
     let user = await db.executeQuery(sqlQuery);
 
     if (user.length > 0) {
@@ -27,19 +27,29 @@ const handleUserLogin = async (rawData) => {
       if (isCorrectPassword === true) {
         let groupWithRoles = await getGroupWithRoles(user);
         const groupName = groupWithRoles[0].TENNHOM;
+        const groupID = groupWithRoles[0].MANHOM;
 
         let userInfo = null;
         if (groupName !== "Admin") {
           userInfo = await getUserInfo(user);
-          console.log(">>>> userInfo", userInfo);
         }
 
         let payload = {
-          username: user[0].USERNAME,
           groupWithRoles,
+          username: user[0].USERNAME,
+          groupName,
+          groupID,
+          userInfo,
         };
         let token = createJWT(payload);
-
+        const data = {
+          access_token: token,
+          groupWithRoles,
+          username: user[0].USERNAME,
+          groupName,
+          groupID,
+          userInfo,
+        };
         return {
           errcode: 0,
           message: "OK",
@@ -47,7 +57,8 @@ const handleUserLogin = async (rawData) => {
             access_token: token,
             groupWithRoles,
             username: user[0].USERNAME,
-            groupName: groupName,
+            groupName,
+            groupID,
             userInfo,
           },
         };
@@ -69,5 +80,6 @@ const handleUserLogin = async (rawData) => {
 };
 
 module.exports = {
+  hashUserPassword,
   handleUserLogin,
 };

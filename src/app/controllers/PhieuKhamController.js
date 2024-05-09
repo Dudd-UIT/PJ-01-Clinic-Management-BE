@@ -43,7 +43,7 @@ class PhieuKhamController {
       console.error("Error calling procedure:", error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }
@@ -107,7 +107,7 @@ class PhieuKhamController {
       });
     } catch (error) {
       console.error("Error calling procedure:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Lỗi ở server" });
     }
   }
 
@@ -152,7 +152,7 @@ class PhieuKhamController {
       console.error(error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }
@@ -189,7 +189,7 @@ class PhieuKhamController {
       });
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Lỗi ở server" });
     }
   }
 
@@ -228,7 +228,7 @@ class PhieuKhamController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Lỗi ở server" });
     }
   }
 
@@ -266,7 +266,7 @@ class PhieuKhamController {
       console.error("Error querying database:", error);
       res.status(500).json({
         errcode: 2,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }
@@ -303,7 +303,7 @@ class PhieuKhamController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Lỗi ở server" });
     }
   }
 }

@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const getGroupWithRoles = async (user) => {
   const userGroup = user[0].MANHOM;
-  const sqlQuery = `SELECT N.MANHOM, TENNHOM, V.MAVAITRO, URL, MOTA
+  const sqlQuery = `SELECT N.MANHOM, TENNHOM, V.MAVAITRO, URL
     FROM NHOM N, VAITRO V, NHOM_VAITRO NV
     WHERE N.MANHOM = '${userGroup}'
     AND N.MANHOM = NV.MANHOM
