@@ -7,6 +7,12 @@ const donthuocRouter = require("./donthuoc");
 const accountRouter = require("./account");
 const hoadonRouter = require("./hoadon");
 const clsRouter = require('./canlamsang')
+const adminRouter = require('./admin')
+const benhRouter = require('./benh')
+const dvtRouter = require('./dvt')
+const roleRouter = require('./role')
+
+
 const thuocRouter = require('./thuoc')
 const {
   checkUserJWT,
@@ -36,6 +42,15 @@ function route(app) {
   app.use("/hoadon", hoadonRouter);
 
   app.use("/cls", clsRouter);
+
+  app.use("/admin", adminRouter);
+
+  app.use("/benh", benhRouter);
+
+  app.use("/dvt", dvtRouter);
+  
+  app.use("/role", roleRouter);
+
 }
 
 module.exports = route;

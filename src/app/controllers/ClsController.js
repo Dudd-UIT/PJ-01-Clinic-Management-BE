@@ -40,7 +40,7 @@ class ClsController {
       console.error("Error querying database:", error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }
@@ -71,7 +71,7 @@ class ClsController {
       console.error("Error querying database:", error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }

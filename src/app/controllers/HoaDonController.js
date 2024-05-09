@@ -35,7 +35,7 @@ class HoaDonController {
       console.error(error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }
@@ -74,7 +74,7 @@ class HoaDonController {
       console.error(error);
       res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error",
+        message: "Lỗi ở server",
       });
     }
   }

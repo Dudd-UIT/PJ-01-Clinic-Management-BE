@@ -20,6 +20,7 @@ const createJWT = (payload) => {
 
 const verifyToken = (token) => {
   let key = process.env.JWT_SECRET;
+
   let decoded = null;
   try {
     decoded = jwt.verify(token, key);
@@ -42,7 +43,6 @@ const extractToken = (req) => {
 
 const checkUserJWT = (req, res, next) => {
   if (nonSecurePaths.includes(req.originalUrl)) {
-    console.log("KHONG CHECK JWT:", req.originalUrl);
     return next();
   }
 
@@ -76,17 +76,13 @@ const checkUserJWT = (req, res, next) => {
 };
 
 const checkUserPermission = (req, res, next) => {
-  if (
-    nonSecurePaths.includes(req.originalUrl) ||
-    req.originalUrl === "/account/getUserAccount"
-  ) {
-    console.log("KHONG CHECK PERMISSION:", req.originalUrl);
+  if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/account/getUserAccount') { 
     return next();
   }
 
   if (req.user) {
     let username = req.user.username;
-    let roles = req.user.groupWithRoles;
+    let roles = req.user.roles;
     let currentUrl = req.originalUrl;
 
     if (!roles || roles.length === 0) {
