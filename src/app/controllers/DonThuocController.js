@@ -95,10 +95,14 @@ class DonThuocController {
         return;
       }
 
+      const formattedThuocList = thuocList.map((thuoc) => {
+        return {...thuoc, thanhTien: thuoc.GIABAN * thuoc.SOLUONGTHUOC};
+      });
+
       res.status(200).send({
         errcode: 0,
         message: "Successful",
-        data: thuocList,
+        data: formattedThuocList,
       });
     } catch (error) {
       console.error("Error querying database:", error);

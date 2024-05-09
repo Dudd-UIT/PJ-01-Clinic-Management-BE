@@ -172,14 +172,22 @@ class PhieuKhamController {
       LEFT JOIN DONTHUOC dth ON pk.MAPK = dth.MAPK
       LEFT JOIN HOADON hd1 ON dth.MAHD = hd1.MAHD 
       LEFT JOIN KETQUADICHVUCLS cls ON pk.MAPK = cls.MAPK
-      LEFT JOIN HOADON hd2 ON cls.MAHD = hd2.MAHD`;
+      LEFT JOIN HOADON hd2 ON cls.MAHD = hd2.MAHD
+      ORDER BY pk.NGAYKHAM`;
 
       const dsDKKham = await db.executeQuery(sqlQuery);
 
       const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
-        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
         itemDKKham.NGAYSINH = new Date(itemDKKham.NGAYSINH);
-        return itemDKKham;
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        if (itemDKKham.TTTTCLS === null) {
+          itemDKKham.TTTTCLS = "Không có đơn";
+        }
+        if (itemDKKham.TTTTDTH === null) {
+          itemDKKham.TTTTDTH = "Không có đơn";
+        }
+        return { ...itemDKKham, NGAYKHAMMIN };
       });
 
       res.status(200).json({
@@ -274,7 +282,7 @@ class PhieuKhamController {
   // GET /phieukham/dspk/:id-hoa-don
   async fetchPKbyIdHD(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN
+      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN, pk.NGAYKHAM
       FROM PHIEUKHAM pk, HOADON hd, DICHVU dv
       WHERE pk.MAHD = hd.MAHD
       AND pk.MADVK = dv.MADV
@@ -292,15 +300,17 @@ class PhieuKhamController {
         return;
       }
 
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successfull",
-            data: pkList,
-          }),
-        1000
-      );
+      const formattedDSPK = pkList.map((itemDKKham) => {
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...itemDKKham, NGAYKHAMMIN };
+      });
+
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: formattedDSPK,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Internal Server Error" });

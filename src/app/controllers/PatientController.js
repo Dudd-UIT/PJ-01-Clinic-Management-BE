@@ -25,11 +25,11 @@ class PatientController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
         message: "Error from server",
         data: [],
-       });
+      });
     }
   }
 
@@ -50,22 +50,18 @@ class PatientController {
       }
 
       const selectedPatient = patients[0];
-      selectedPatient.NGAYSINH = new Date(selectedPatient.NGAYSINH)
+      selectedPatient.NGAYSINH = new Date(selectedPatient.NGAYSINH);
 
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successful",
-            data: selectedPatient,
-          }),
-        1000
-      );
+      res.status(200).send({
+        errcode: 0,
+        message: "Successful",
+        data: selectedPatient,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
-        message: "Internal Server Error"
+        message: "Internal Server Error",
       });
     }
   }

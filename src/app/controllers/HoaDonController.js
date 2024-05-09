@@ -5,7 +5,7 @@ const { DateTime2 } = require("mssql");
 
 class HoaDonController {
   // POST /hoadon/insert
-  
+
   async insert(req, res) {
     const { maLT, maLHD, tttt, ...others } = req.body;
     try {
@@ -43,14 +43,15 @@ class HoaDonController {
   // GET /hoadon/dshd/:id-phieu-kham
   async fetchHDbyID(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT hd.MAHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.HOTEN as TENLT
+      const sqlQuery = `SELECT DISTINCT hd.MAHD, hd.MALOAIHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.HOTEN as TENLT
       FROM HOADON hd, PHIEUKHAM pk, KETQUADICHVUCLS cls, DONTHUOC dth, LOAIHD lhd, LETAN lt
       WHERE (hd.MAHD = pk.MAHD
       OR (pk.MAPK = dth.MAPK AND hd.MAHD = dth.MAHD)
       OR (pk.MAPK = cls.MAPK AND hd.MAHD = cls.MAHD) )
       AND hd.MALOAIHD = lhd.MALOAIHD
       AND hd.MALT = lt.MALT
-      AND pk.MAPK = ${req.params.id}`;
+      AND pk.MAPK = ${req.params.id}
+      ORDER BY MALOAIHD ASC`;
 
       const hdList = await db.executeQuery(sqlQuery);
 

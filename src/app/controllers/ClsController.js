@@ -6,7 +6,7 @@ class ClsController {
   // GET /ds-cls/:id
   async fetchClsById(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT
+      const sqlQuery = `SELECT cls.MAKQ, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT, pk.NGAYKHAM
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
@@ -25,18 +25,20 @@ class ClsController {
         return;
       }
 
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successful",
-            data: clsList,
-          }),
-        1000
-      );
+      const formattedDSCLS = clsList.map((itemDKKham) => {
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...itemDKKham, NGAYKHAMMIN };
+      });
+
+      res.status(200).send({
+        errcode: 0,
+        message: "Successful",
+        data: formattedDSCLS,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
         message: "Internal Server Error",
       });
@@ -67,7 +69,7 @@ class ClsController {
       );
     } catch (error) {
       console.error("Error querying database:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         errcode: -1,
         message: "Internal Server Error",
       });
