@@ -26,6 +26,12 @@ const handleUserLogin = async (rawData) => {
       let isCorrectPassword = checkPassword(password, user[0].PASSWORD);
       if (isCorrectPassword === true) {
         let groupWithRoles = await getGroupWithRoles(user);
+        const roles = groupWithRoles.map(item => {
+          let data = {MAVAITRO: +item.MAVAITRO, URL: item.URL};
+          return data;
+        })
+        console.log('roles', roles)
+
         const groupName = groupWithRoles[0].TENNHOM;
         const groupID = groupWithRoles[0].MANHOM;
 
@@ -35,27 +41,19 @@ const handleUserLogin = async (rawData) => {
         }
 
         let payload = {
-          groupWithRoles,
+          roles,
           username: user[0].USERNAME,
           groupName,
           groupID,
           userInfo,
         };
         let token = createJWT(payload);
-        const data = {
-          access_token: token,
-          groupWithRoles,
-          username: user[0].USERNAME,
-          groupName,
-          groupID,
-          userInfo,
-        };
         return {
           errcode: 0,
           message: "OK",
           data: {
             access_token: token,
-            groupWithRoles,
+            roles,
             username: user[0].USERNAME,
             groupName,
             groupID,

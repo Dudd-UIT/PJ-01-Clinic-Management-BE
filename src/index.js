@@ -9,7 +9,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
 const port = process.env.PORT;
-app.use(cors({ origin:true, credentials:true }));
+// app.use(cors({ origin:true, credentials:true }));
 // Custom CORS middleware
 //config cors
 app.use(function (req, res, next) {

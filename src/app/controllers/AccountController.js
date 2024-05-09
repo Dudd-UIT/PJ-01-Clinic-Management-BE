@@ -9,7 +9,7 @@ const getUserAccount = async (req, res) => {
     message: "Get user accout successfully.",
     data: {
       access_token: req.token,
-      groupWithRoles: req.user.groupWithRoles,
+      roles: req.user.roles,
       username: req.user.username,
       groupName: req.user.groupName,
       groupID: req.user.groupID,
