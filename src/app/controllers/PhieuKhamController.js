@@ -232,7 +232,7 @@ class PhieuKhamController {
     }
   }
 
-  // GET /phieukham/ds-benh/:id
+  // GET /phieukham/ds-benh/:id-phieu-kham
   async fetchDSBenh(req, res) {
     try {
       const sqlQuery = `SELECT b.MAICD, b.TENBENH
