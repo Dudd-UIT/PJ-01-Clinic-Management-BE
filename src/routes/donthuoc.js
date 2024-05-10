@@ -5,7 +5,7 @@ const donThuocController = require('../app/controllers/DonThuocController')
 
 // /donthuoc/...
 
-router.get('/ds-thuoc/:id', donThuocController.fetchDSThuoc)
+router.get('/ds-thuoc/getById/:id', donThuocController.fetchDSThuoc)
 router.post('/insert', donThuocController.insert)
 router.post('/insert-ctdt', donThuocController.insertCTDT)
 

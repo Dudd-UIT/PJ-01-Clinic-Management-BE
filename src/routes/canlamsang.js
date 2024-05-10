@@ -5,7 +5,7 @@ const clsController = require('../app/controllers/ClsController')
 
 // /cls/...
 
-router.get('/ds-cls/:id', clsController.fetchClsById)
+router.get('/ds-cls/getById/:id', clsController.fetchClsById)
 router.get('/getAll', clsController.fetchAllCls)
 
 module.exports = router

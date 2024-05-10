@@ -30,10 +30,14 @@ const handleUserLogin = async (rawData) => {
           let data = {MAVAITRO: +item.MAVAITRO, URL: item.URL};
           return data;
         })
-        console.log('roles', roles)
+        const groupID = user[0].MANHOM;
+        console.log('groupID', groupID)
 
-        const groupName = groupWithRoles[0].TENNHOM;
-        const groupID = groupWithRoles[0].MANHOM;
+        console.log('groupWithRoles', groupWithRoles)
+        const sql = `SELECT TENNHOM FROM NHOM WHERE MANHOM = '${groupID}'`;
+        let result = await db.executeQuery(sql);
+        const groupName = result[0].TENNHOM;
+        console.log('groupName', groupName)
 
         let userInfo = null;
         if (groupName !== "Admin") {
