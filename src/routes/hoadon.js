@@ -6,6 +6,6 @@ const hoaDonController = require('../app/controllers/HoaDonController')
 // /hoadon/...
 
 router.post('/insert', hoaDonController.insert)
-router.get('/dshd-by-id/:id', hoaDonController.fetchHDbyID)
+router.get('/dshd/getById/:id', hoaDonController.fetchHDbyID)
 
 module.exports = router

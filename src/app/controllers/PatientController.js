@@ -33,7 +33,7 @@ class PatientController {
     }
   }
 
-  // GET /benhnhan/:id
+  // GET /benhnhan/getById/:id
   async getByID(req, res) {
     try {
       const sqlQuery = `SELECT MABN, MATK, CCCD, HOTEN, NGAYSINH, GIOITINH, SDT, DIACHI, TIENSUBENH, DIUNG 
@@ -61,7 +61,7 @@ class PatientController {
       console.error("Error querying database:", error);
       res.status(500).json({
         errcode: -1,
-        message: "Lỗi ở server"
+        message: "Lỗi ở server",
       });
     }
   }

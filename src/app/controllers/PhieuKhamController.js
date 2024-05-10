@@ -125,7 +125,7 @@ class PhieuKhamController {
         PAR_MADV: dichVu,
         PAR_MABS: maBS,
         PAR_MAHD: maHD,
-        PAR_MAPHONG: Math.floor(Math.random() * 4) + 1,
+        PAR_MAPHONG: Math.floor(Math.random() * 3) + 1,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
         PAR_TRANGTHAI: "Dang thuc hien",
@@ -180,14 +180,16 @@ class PhieuKhamController {
       const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
         itemDKKham.NGAYSINH = new Date(itemDKKham.NGAYSINH);
         itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
-        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         if (itemDKKham.TTTTCLS === null) {
           itemDKKham.TTTTCLS = "Không có đơn";
         }
         if (itemDKKham.TTTTDTH === null) {
           itemDKKham.TTTTDTH = "Không có đơn";
         }
-        return { ...itemDKKham, NGAYKHAMMIN };
+        const INFOBN = itemDKKham.TENBN + '\n' + itemDKKham.GIOITINH + ' - SĐT: ' + itemDKKham.SDT;
+        const INFOBS = 'BS ' + itemDKKham.TRINHDO + ' ' + itemDKKham.TENBS;
+        const MAPKTG = 'PK' + itemDKKham.MAPK + '\n' + format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
       res.status(200).json({
