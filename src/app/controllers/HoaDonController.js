@@ -23,6 +23,7 @@ class HoaDonController {
         maHDOut: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
+      await db.setIsolationLevel();
       const result = await db.executeProcedure(sqlQuery, bindVars);
 
       // Xử lý kết quả trả về

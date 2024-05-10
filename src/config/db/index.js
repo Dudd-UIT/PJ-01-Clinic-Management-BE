@@ -19,6 +19,38 @@ async function connect() {
   }
 }
 
+
+async function setIsolationLevel() {
+  try {
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+
+    console.log('Transaction isolation level set to SERIALIZABLE.');
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+async function commit() {
+  let connection;
+  try {
+    await connection.execute('COMMIT;')
+
+    console.log('Transaction committed successfully.');
+  } catch (error) {
+    console.error('Error:', error);
+    // Nếu có lỗi, rollback giao dịch
+    if (connection) {
+      try {
+        await connection.rollback();
+        console.log('Transaction rolled back successfully.');
+      } catch (rollbackError) {
+        console.error('Rollback error:', rollbackError);
+      }
+    }
+  }
+}
+
 // Thực thi truy vấn SQL
 async function executeQuery(sqlQuery) {
   try {
@@ -48,6 +80,8 @@ async function executeProcedure(procedureName, bindVars) {
 
 module.exports = {
   connect,
+  setIsolationLevel,
+  commit,
   executeQuery,
   executeProcedure,
 };

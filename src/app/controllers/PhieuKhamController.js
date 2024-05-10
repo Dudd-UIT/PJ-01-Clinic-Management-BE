@@ -140,7 +140,9 @@ class PhieuKhamController {
         MAPK_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
+      
       const result = await db.executeProcedure(sqlQuery, bindVars);
+      //await db.commit();
 
       // Xử lý kết quả trả về
       res.status(200).json({
