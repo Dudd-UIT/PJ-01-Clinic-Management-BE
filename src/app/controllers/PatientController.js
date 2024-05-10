@@ -33,7 +33,7 @@ class PatientController {
     }
   }
 
-  // GET /benhnhan/:id
+  // GET /benhnhan/getById/:id
   async getByID(req, res) {
     try {
       const sqlQuery = `SELECT MABN, MATK, CCCD, HOTEN, NGAYSINH, GIOITINH, SDT, DIACHI, TIENSUBENH, DIUNG 

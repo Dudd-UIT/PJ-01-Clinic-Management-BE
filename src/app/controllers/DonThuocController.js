@@ -70,7 +70,7 @@ class DonThuocController {
     }
   }
 
-  // GET /ds-thuoc/:id-phieu-kham
+  // GET /ds-thuoc/getById/:id-phieu-kham
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `

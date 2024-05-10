@@ -11,9 +11,9 @@ const adminRouter = require('./admin')
 const benhRouter = require('./benh')
 const dvtRouter = require('./dvt')
 const roleRouter = require('./role')
-
-
 const thuocRouter = require('./thuoc')
+const lothuocRouter = require('./lothuoc')
+
 const {
   checkUserJWT,
   checkUserPermission,
@@ -38,6 +38,8 @@ function route(app) {
   app.use("/donthuoc", donthuocRouter);
 
   app.use("/thuoc", thuocRouter);
+
+  app.use("/lothuoc", lothuocRouter);
 
   app.use("/hoadon", hoadonRouter);
 

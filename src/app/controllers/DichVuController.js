@@ -11,7 +11,6 @@ class DichVuController {
           WHERE L.MALOAIDV = D.MALOAIDV
           AND TRANGTHAI = 1`;
       const dichvus = await db.executeQuery(sqlQuery);
-
       setTimeout(
         () =>
           res.status(200).json({
