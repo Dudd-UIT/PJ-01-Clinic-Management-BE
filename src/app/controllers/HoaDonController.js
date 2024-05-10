@@ -5,7 +5,6 @@ const { DateTime2 } = require("mssql");
 
 class HoaDonController {
   // POST /hoadon/insert
-
   async insert(req, res) {
     const { maLT, maLHD, tttt, ...others } = req.body;
     try {
@@ -40,10 +39,45 @@ class HoaDonController {
     }
   }
 
+  // POST /hoadon/thanhtoan
+  async thanhToan(req, res) {
+    const { MAHD, maLT, MALOAIHD, tdtt, tttt, THANHTIEN, pttt, ...others } =
+      req.body;
+    try {
+      const sqlQuery = `BEGIN
+        UPDATE_HOADON(:p_maHD, :p_maLT, :p_maLHD, :p_tdtt, :p_tttt, :p_thanhTien, :p_pttt);
+      END;`;
+
+      const bindVars = {
+        p_maHD: MAHD,
+        p_maLT: maLT,
+        p_maLHD: MALOAIHD,
+        p_tdtt: new Date(tdtt),
+        p_tttt: tttt,
+        p_thanhTien: THANHTIEN,
+        p_pttt: pttt,
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Thanh toán hóa đơn thành công",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
   // GET /hoadon/dshd/:id-phieu-kham
   async fetchHDbyID(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT hd.MAHD, hd.MALOAIHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.HOTEN as TENLT
+      const sqlQuery = `SELECT DISTINCT hd.MAHD, hd.MALOAIHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.MALT, lt.HOTEN as TENLT
       FROM HOADON hd, PHIEUKHAM pk, KETQUADICHVUCLS cls, DONTHUOC dth, LOAIHD lhd, LETAN lt
       WHERE (hd.MAHD = pk.MAHD
       OR (pk.MAPK = dth.MAPK AND hd.MAHD = dth.MAHD)
@@ -64,11 +98,18 @@ class HoaDonController {
         return;
       }
 
+      const formatedHdList = hdList.map((hdItem) => {
+        const formatTime = hdItem.TDTT
+          ? format(hdItem.TDTT, "dd/MM/yyyy - HH:mm")
+          : hdItem.TDTT;
+        return { ...hdItem, TDTT: formatTime };
+      });
+
       // Xử lý kết quả trả về
       res.status(200).json({
         errcode: 0,
         message: "Successful",
-        data: hdList,
+        data: formatedHdList,
       });
     } catch (error) {
       console.error(error);
