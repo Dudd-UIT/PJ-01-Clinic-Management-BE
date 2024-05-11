@@ -26,14 +26,15 @@ const handleUserLogin = async (rawData) => {
       let isCorrectPassword = checkPassword(password, user[0].PASSWORD);
       if (isCorrectPassword === true) {
         let groupWithRoles = await getGroupWithRoles(user);
-        const roles = groupWithRoles.map(item => {
-          let data = {MAVAITRO: +item.MAVAITRO, URL: item.URL};
+        const roles = groupWithRoles.map((item) => {
+          let data = { MAVAITRO: +item.MAVAITRO, URL: item.URL };
           return data;
-        })
-        console.log('roles', roles)
+        });
+        const groupID = user[0].MANHOM;
 
-        const groupName = groupWithRoles[0].TENNHOM;
-        const groupID = groupWithRoles[0].MANHOM;
+        const sql = `SELECT TENNHOM FROM NHOM WHERE MANHOM = '${groupID}'`;
+        let result = await db.executeQuery(sql);
+        const groupName = result[0].TENNHOM;
 
         let userInfo = null;
         if (groupName !== "Admin") {
@@ -77,7 +78,57 @@ const handleUserLogin = async (rawData) => {
   }
 };
 
+const handleChangePassword = async (rawData) => {
+  console.log(rawData)
+  let username = rawData.username;
+  let oldPassword = rawData.oldPassword;
+  let newPassword = rawData.newPassword;
+
+  try {
+    const sqlQuery = `SELECT * FROM TAIKHOAN WHERE USERNAME = '${username}' AND TRANGTHAI = 1`;
+    let user = await db.executeQuery(sqlQuery);
+
+    if (user.length > 0) {
+      let isCorrectPassword = checkPassword(oldPassword, user[0].PASSWORD);
+      if (isCorrectPassword === true) {
+        const hashPass = hashUserPassword(newPassword);
+        const maTK = user[0].MATK;
+        const sqlQuery = ` 
+                          BEGIN
+                              UPDATE_TAIKHOAN(:PAR_MATK, :PAR_USERNAME, :PAR_PASSWORD);
+                          END;`;
+        const bindVars = {
+          PAR_MATK: maTK,
+          PAR_USERNAME: username,
+          PAR_PASSWORD: hashPass,
+        };
+
+        const result = await db.executeProcedure(sqlQuery, bindVars);
+
+        return {
+          errcode: 0,
+          message: "Đổi mật khẩu thành công",
+          data: "",
+        };
+      }
+    }
+    return {
+      errcode: 1,
+      message: "Your username or old password is incorrect!",
+      data: "",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      errcode: -1,
+      message: "Somthing went wrong",
+      data: "",
+    };
+  }
+};
+
 module.exports = {
   hashUserPassword,
   handleUserLogin,
+  handleChangePassword,
 };

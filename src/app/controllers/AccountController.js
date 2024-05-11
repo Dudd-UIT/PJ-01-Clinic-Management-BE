@@ -1,7 +1,6 @@
 const { handleUserLogin } = require("../../services/UserService");
 const db = require("../../config/db");
-const oracledb = require("oracledb");
-const { hashUserPassword } = require("../../services/UserService");
+const { hashUserPassword, handleChangePassword } = require("../../services/UserService");
 // GET /account/getUserAccount
 const getUserAccount = async (req, res) => {
   return res.status(200).json({
@@ -159,6 +158,26 @@ const logout = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       errcode: -1,
+      message: "error from server",
+      data: [],
+    });
+  }
+};
+
+// POST /account/changePassword
+const changePassword = async (req, res) => {
+  try {
+    let Data = await handleChangePassword(req.body);
+
+    return res.status(200).json({
+      errcode: Data.errcode,
+      message: Data.message,
+      data: Data.data,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      errcode: "-1",
       message: "error from server",
       data: [],
     });
@@ -428,6 +447,7 @@ module.exports = {
   getAllUserGroup,
   login,
   logout,
+  changePassword,
   registerAccount,
   updateAccountTTCN,
   updateAccountTTTK,

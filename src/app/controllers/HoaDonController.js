@@ -74,7 +74,7 @@ class HoaDonController {
     }
   }
 
-  // GET /hoadon/dshd/:id-phieu-kham
+  // GET /hoadon/dshd/getById/:id-phieu-kham
   async fetchHDbyID(req, res) {
     try {
       const sqlQuery = `SELECT DISTINCT hd.MAHD, hd.MALOAIHD, lhd.TENLOAIHD, hd.THANHTIEN, hd.TTTT, hd.TDTT, hd.PTTT, lt.MALT, lt.HOTEN as TENLT

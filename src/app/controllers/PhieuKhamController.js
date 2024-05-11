@@ -203,7 +203,7 @@ class PhieuKhamController {
     }
   }
 
-  // GET /phieukham/chitiet-pk/:id
+  // GET /phieukham/chitiet-pk/getById/:id
   async fetchKQKham(req, res) {
     try {
       const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, 
@@ -242,7 +242,7 @@ class PhieuKhamController {
     }
   }
 
-  // GET /phieukham/ds-benh/:id-phieu-kham
+  // GET /phieukham/ds-benh/getById/:id-phieu-kham
   async fetchDSBenh(req, res) {
     try {
       const sqlQuery = `SELECT b.MAICD, b.TENBENH
@@ -281,7 +281,7 @@ class PhieuKhamController {
     }
   }
 
-  // GET /phieukham/dspk/:id-hoa-don
+  // GET /phieukham/dspk/getById/:id-hoa-don
   async fetchPKbyIdHD(req, res) {
     try {
       const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN, pk.NGAYKHAM

@@ -8,6 +8,7 @@ router.get("/getAllAccount", accountController.getAllAccount);
 router.get("/getAllUserGroup", accountController.getAllUserGroup);
 router.post("/login", accountController.login);
 router.post("/logout", accountController.logout);
+router.post("/changePassword", accountController.changePassword);
 router.post("/insert", accountController.registerAccount);
 router.post("/updateTTCN", accountController.updateAccountTTCN);
 router.post("/updateTTTK", accountController.updateAccountTTTK);
