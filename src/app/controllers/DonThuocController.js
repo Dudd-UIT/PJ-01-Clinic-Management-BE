@@ -38,10 +38,19 @@ class DonThuocController {
 
   // POST /donthuoc/insert-ctdt
   async insertCTDT(req, res) {
-    const { maDT, MATHUOC, SOLANUONG, SOLUONGUONG, SOLUONGTHUOC, GHICHU, ...others } = req.body;
+    const {
+      maDT,
+      MATHUOC,
+      SOLANUONG,
+      SOLUONGUONG,
+      SOLUONGTHUOC,
+      GIABAN,
+      GHICHU,
+      ...others
+    } = req.body;
     try {
       const sqlQuery = `BEGIN
-      INSERT_CTDT (:PAR_MADT, :PAR_MATHUOC, :PAR_SOLANUONG, :PAR_SOLUONGUONG, :PAR_TRANGTHAI, :PAR_SOLUONGTHUOC, :PAR_GHICHU);      
+      INSERT_CTDT (:PAR_MADT, :PAR_MATHUOC, :PAR_SOLANUONG, :PAR_SOLUONGUONG, :PAR_TRANGTHAI, :PAR_SOLUONGTHUOC, :PAR_GIABAN, :PAR_GHICHU);      
       END;`;
 
       const bindVars = {
@@ -49,8 +58,9 @@ class DonThuocController {
         PAR_MATHUOC: MATHUOC,
         PAR_SOLANUONG: SOLANUONG,
         PAR_SOLUONGUONG: SOLUONGUONG,
-        PAR_TRANGTHAI: 'Chưa đặt lịch',
+        PAR_TRANGTHAI: "Chưa đặt lịch",
         PAR_SOLUONGTHUOC: SOLUONGTHUOC,
+        PAR_GIABAN: GIABAN,
         PAR_GHICHU: GHICHU,
       };
 
@@ -95,10 +105,14 @@ class DonThuocController {
         return;
       }
 
+      const formattedThuocList = thuocList.map((thuoc) => {
+        return { ...thuoc, thanhTien: thuoc.GIABAN * thuoc.SOLUONGTHUOC };
+      });
+
       res.status(200).send({
         errcode: 0,
         message: "Successful",
-        data: thuocList,
+        data: formattedThuocList,
       });
     } catch (error) {
       console.error("Error querying database:", error);
