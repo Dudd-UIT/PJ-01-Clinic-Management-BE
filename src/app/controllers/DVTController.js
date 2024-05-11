@@ -7,7 +7,6 @@ const getAll = async (req, res) => {
     const sqlQuery = `SELECT * FROM DONVITHUOC WHERE TRANGTHAI = 1`;
 
     const DVT = await db.executeQuery(sqlQuery);
-    console.log('dvt', DVT)
 
     res.status(200).json({
       errcode: 0,

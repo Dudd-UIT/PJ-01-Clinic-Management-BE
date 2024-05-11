@@ -117,7 +117,6 @@ const assignRoleToGroup = async (req, res) => {
 
 // POST /role/update
 const update = async (req, res) => {
-  console.log(req.body)
   const { maVaiTro, url, moTa } = req.body;
 
   try {
