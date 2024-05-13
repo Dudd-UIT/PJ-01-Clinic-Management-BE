@@ -128,7 +128,7 @@ class PhieuKhamController {
         PAR_MAPHONG: Math.floor(Math.random() * 3) + 1,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
-        PAR_TRANGTHAI: "Dang thuc hien",
+        PAR_TRANGTHAI: "Chưa thực hiện",
         PAR_STT: Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
         PAR_CHIEUCAO: null,
@@ -147,6 +147,36 @@ class PhieuKhamController {
         errcode: 0,
         message: "Thêm phiếu khám thành công",
         MAPK: result.outBinds.MAPK_OUT,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
+  // POST /phieukham/update-trang-thai
+  async updateTrangThai(req, res) {
+    const { trangThai, maPK, ...others } = req.body;
+    try {
+      const sqlQuery = `
+      UPDATE PHIEUKHAM
+      SET TRANGTHAITH = :p_TRANGTHAI
+      WHERE MAPK = :p_MAPK`;
+
+      const bindVars = {
+        p_TRANGTHAI: trangThai,
+        p_MAPK: maPK,
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Cập nhật trạng thái phiếu khám thành công"
       });
     } catch (error) {
       console.error(error);

@@ -38,9 +38,9 @@ class ThuocController {
                         FROM THUOC T, DONVITHUOC D 
                         WHERE T.MADVT = D.MADVT
                         AND T.TRANGTHAI = 1`;
-                    
+
       const thuoc = await db.executeQuery(sqlQuery);
-  
+
       res.status(200).json({
         errcode: 0,
         message: "Successful",
