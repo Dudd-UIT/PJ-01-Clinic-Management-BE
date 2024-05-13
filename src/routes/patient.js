@@ -5,6 +5,7 @@ const patientController = require('../app/controllers/PatientController')
 
 
 router.post('/insert', patientController.store)
+router.post('/update', patientController.update)
 router.get('/getAll', patientController.getAll)
 router.get('/getById/:id', patientController.getByID)
 

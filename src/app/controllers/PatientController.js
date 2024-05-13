@@ -68,6 +68,7 @@ class PatientController {
 
   // POST /benhnhan/insert
   async store(req, res) {
+    console.log(req.body);
     const {
       hoTen,
       gioiTinh,
@@ -79,6 +80,9 @@ class PatientController {
       tienSuBenh,
       ...others
     } = req.body;
+
+    const formattedNgaySinh = new Date(ngaySinh);
+    console.log("Insert: ", formattedNgaySinh);
 
     try {
       const formattedNgaySinh = new Date(ngaySinh);
@@ -107,6 +111,58 @@ class PatientController {
         errcode: 0,
         message: "Thêm bệnh nhân mới thành công",
         MABN: result.outBinds.out_mabn,
+      });
+    } catch (error) {
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
+  // POST /benhnhan/update
+  async update(req, res) {
+    console.log("request body: ", req.body);
+    const {
+      maBN,
+      CCCD,
+      tenBN,
+      gioiTinh,
+      diaChi,
+      ngaySinh,
+      soDienThoai,
+      diUng,
+      tienSuBenh,
+    } = req.body;
+    const formattedNgaySinh = new Date(ngaySinh);
+    console.log("Update: ", formattedNgaySinh);
+
+    try {
+      const formattedNgaySinh = new Date(ngaySinh);
+
+      const sqlQuery = `
+                BEGIN
+                    UPDATE_BENHNHAN(:par_Mabn, :par_cccd, :par_HoTen, :par_NgaySinh, :par_GioiTinh, :par_sdt, :par_DiaChi, :par_TienSuBenh, :par_DiUng);
+                END;`;
+
+      const bindVars = {
+        par_Mabn: maBN,
+        par_cccd: CCCD,
+        par_HoTen: tenBN,
+        par_NgaySinh: formattedNgaySinh,
+        par_GioiTinh: gioiTinh,
+        par_sdt: soDienThoai,
+        par_DiaChi: diaChi,
+        par_TienSuBenh: tienSuBenh,
+        par_DiUng: diUng,
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Cập nhật thông tin khách hàng thành công",
       });
     } catch (error) {
       res.status(500).json({
