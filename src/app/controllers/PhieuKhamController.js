@@ -128,7 +128,7 @@ class PhieuKhamController {
         PAR_MAPHONG: Math.floor(Math.random() * 3) + 1,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
-        PAR_TRANGTHAI: "Dang thuc hien",
+        PAR_TRANGTHAI: "Đang thực hiện",
         PAR_STT: Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
         PAR_CHIEUCAO: null,
