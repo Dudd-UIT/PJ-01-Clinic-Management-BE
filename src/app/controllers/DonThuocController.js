@@ -5,6 +5,7 @@ const { format } = require("date-fns");
 class DonThuocController {
   // POST /donthuoc/insert
   async insert(req, res) {
+    console.log(req.body)
     const { maPK, maLT, ...others } = req.body;
     try {
       const sqlQuery = `BEGIN

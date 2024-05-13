@@ -18,7 +18,7 @@ class PhieuKhamController {
         v_MABN: maBN,
         v_MADV: dichVu,
         v_MABS: maBS,
-        v_MAPHONG: Math.floor(Math.random() * 4) + 1,
+        v_MAPHONG: Math.floor(Math.random() * 11) + 100,
         v_NGAY_KHAM: new Date(ngayKham),
         v_NGAY_DAT_LICH: null,
         v_TRANGTHAI: "Dang thuc hien",
