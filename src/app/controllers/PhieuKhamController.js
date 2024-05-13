@@ -186,9 +186,18 @@ class PhieuKhamController {
         if (itemDKKham.TTTTDTH === null) {
           itemDKKham.TTTTDTH = "Không có đơn";
         }
-        const INFOBN = itemDKKham.TENBN + '\n' + itemDKKham.GIOITINH + ' - SĐT: ' + itemDKKham.SDT;
-        const INFOBS = 'BS ' + itemDKKham.TRINHDO + ' ' + itemDKKham.TENBS;
-        const MAPKTG = 'PK' + itemDKKham.MAPK + '\n' + format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const INFOBN =
+          itemDKKham.TENBN +
+          "\n" +
+          itemDKKham.GIOITINH +
+          " - SĐT: " +
+          itemDKKham.SDT;
+        const INFOBS = "BS " + itemDKKham.TRINHDO + " " + itemDKKham.TENBS;
+        const MAPKTG =
+          "PK" +
+          itemDKKham.MAPK +
+          "\n" +
+          format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
@@ -316,6 +325,146 @@ class PhieuKhamController {
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
+
+  // POST /phieukham/ttk/getById
+  async fetchTTKbyIdPK(req, res) {
+    console.log(req.body);
+    const { maPK } = req.body;
+    try {
+      const sqlQuery = `
+        SELECT MAPK, TIENSUBENH, DIUNG, BS.HOTEN, BS.TRINHDO, DV.TENDV, TENPHONG, SOPHONG, TANG, NGAYKHAM, TRANGTHAITH, HUYETAP, LYDOKHAM, CHIEUCAO, CANNANG, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN
+        FROM PHIEUKHAM P, BENHNHAN B, PHONGKHAM PK, BACSI BS, DICHVU DV
+        WHERE P.MABN = B.MABN
+        AND DV.MADV = P.MADVK
+        AND P.MABSC = BS.MABS
+        AND P.MAPHONG = PK.MAPHONG
+        AND MAPK = ${maPK}`;
+
+      let ttk = await db.executeQuery(sqlQuery);
+
+      if (ttk.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MAHD",
+          data: ttk,
+        });
+        return;
+      }
+
+      const formattedTTK = ttk.map((itemDKKham) => {
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...itemDKKham, NGAYKHAMMIN };
+      });
+
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: formattedTTK,
+      });
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
+
+  // POST /phieukham/ttk/dsBenh/getById
+  async fetchDSBTTKbyIdPK(req, res) {
+    console.log(req.body);
+    const { maPK } = req.body;
+    try {
+      const sqlQuery = `
+          SELECT B.MABENH, MAICD, TENBENH
+          FROM CHITIETBENH C, BENH B
+          WHERE C.MABENH = B.MABENH
+          AND MAPK = ${maPK}`;
+
+      let dsBenh = await db.executeQuery(sqlQuery);
+
+      if (dsBenh.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found",
+          data: dsBenh,
+        });
+        return;
+      }
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: dsBenh,
+      });
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
+
+  // POST /phieukham/update
+  async update(req, res) {
+    const {
+      maPK,
+      trieuChung,
+      tinhTrangCoThe,
+      ketLuan,
+      huyetAp,
+      chieuCao,
+      canNang,
+      benh,
+    } = req.body;
+    console.log(benh);
+    const maBenh = benh.map(item => item.MABENH)
+    console.log('maBenh', maBenh);
+    try {
+      const sqlQuery1 = ` 
+        BEGIN
+          UPDATE_PHIEUKHAM (:PAR_MAPK, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNG, :PAR_TINHTRANG, :PAR_KETLUAN);   
+        END; `;
+
+      const bindVars = {
+        PAR_MAPK: maPK,
+        PAR_HUYETAP: huyetAp,
+        PAR_CHIEUCAO: chieuCao,
+        PAR_CANNANG: canNang,
+        PAR_TRIEUCHUNG: trieuChung,
+        PAR_TINHTRANG: tinhTrangCoThe,
+        PAR_KETLUAN: ketLuan,
+      };
+      await db.executeProcedure(sqlQuery1, bindVars);
+
+      const sqlQuery2 = `DELETE FROM CHITIETBENH WHERE MAPK = '${maPK}'`;
+      await db.executeQuery(sqlQuery2);
+
+      if (benh.length > 0) {
+        for (const item of maBenh) {
+          const sqlQuery = ` 
+          BEGIN
+            INSERT_CHITIETBENH (:PAR_MAPK, :PAR_MABENH);       
+          END;`;
+          const bindVars = {
+            PAR_MAPK: maPK,
+            PAR_MABENH: item,
+          };
+
+          await db.executeProcedure(sqlQuery, bindVars);
+        }
+      }
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Cập nhật phiếu khám thành công",
+        data: "",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+        data: "",
+      });
     }
   }
 }

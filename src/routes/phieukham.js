@@ -12,5 +12,9 @@ router.get("/dsdk", phieukhamController.fetchDSDK);
 router.get("/chitiet-pk/getById/:id", phieukhamController.fetchKQKham);
 router.get("/dspk/getById/:id", phieukhamController.fetchPKbyIdHD);
 router.get("/ds-benh/getById/:id", phieukhamController.fetchDSBenh);
+router.post("/ttk/getById", phieukhamController.fetchTTKbyIdPK);
+router.post("/ttk/dsBenh/getById", phieukhamController.fetchDSBTTKbyIdPK);
+router.post("/update", phieukhamController.update);
+
 
 module.exports = router;
