@@ -128,7 +128,7 @@ class PhieuKhamController {
         PAR_MAPHONG: Math.floor(Math.random() * 3) + 1,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
-        PAR_TRANGTHAI: "Đang thực hiện",
+        PAR_TRANGTHAI: "Chưa thực hiện",
         PAR_STT: Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
         PAR_CHIEUCAO: null,
@@ -186,9 +186,18 @@ class PhieuKhamController {
         if (itemDKKham.TTTTDTH === null) {
           itemDKKham.TTTTDTH = "Không có đơn";
         }
-        const INFOBN = itemDKKham.TENBN + '\n' + itemDKKham.GIOITINH + ' - SĐT: ' + itemDKKham.SDT;
-        const INFOBS = 'BS ' + itemDKKham.TRINHDO + ' ' + itemDKKham.TENBS;
-        const MAPKTG = 'PK' + itemDKKham.MAPK + '\n' + format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const INFOBN =
+          itemDKKham.TENBN +
+          "\n" +
+          itemDKKham.GIOITINH +
+          " - SĐT: " +
+          itemDKKham.SDT;
+        const INFOBS = "BS " + itemDKKham.TRINHDO + " " + itemDKKham.TENBS;
+        const MAPKTG =
+          "PK" +
+          itemDKKham.MAPK +
+          "\n" +
+          format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
