@@ -157,6 +157,36 @@ class PhieuKhamController {
     }
   }
 
+  // POST /phieukham/update-trang-thai
+  async updateTrangThai(req, res) {
+    const { trangThai, maPK, ...others } = req.body;
+    try {
+      const sqlQuery = `
+      UPDATE PHIEUKHAM
+      SET TRANGTHAITH = :p_TRANGTHAI
+      WHERE MAPK = :p_MAPK`;
+
+      const bindVars = {
+        p_TRANGTHAI: trangThai,
+        p_MAPK: maPK,
+      };
+
+      const result = await db.executeProcedure(sqlQuery, bindVars);
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Cập nhật trạng thái phiếu khám thành công"
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
