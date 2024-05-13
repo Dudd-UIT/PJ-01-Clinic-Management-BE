@@ -13,16 +13,11 @@ class PatientController {
         patient.NGAYSINH = new Date(patient.NGAYSINH);
         return patient;
       });
-
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successful",
-            data: formattedPatients,
-          }),
-        1000
-      );
+      res.status(200).send({
+        errcode: 0,
+        message: "Successful",
+        data: formattedPatients,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({
@@ -122,7 +117,6 @@ class PatientController {
 
   // POST /benhnhan/update
   async update(req, res) {
-    console.log("request body: ", req.body);
     const {
       maBN,
       CCCD,
@@ -135,11 +129,8 @@ class PatientController {
       tienSuBenh,
     } = req.body;
     const formattedNgaySinh = new Date(ngaySinh);
-    console.log("Update: ", formattedNgaySinh);
 
     try {
-      const formattedNgaySinh = new Date(ngaySinh);
-
       const sqlQuery = `
                 BEGIN
                     UPDATE_BENHNHAN(:par_Mabn, :par_cccd, :par_HoTen, :par_NgaySinh, :par_GioiTinh, :par_sdt, :par_DiaChi, :par_TienSuBenh, :par_DiUng);
