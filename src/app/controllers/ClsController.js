@@ -41,13 +41,15 @@ class ClsController {
   // GET /ds-cls/getById/:id
   async fetchClsById(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT, pk.NGAYKHAM, bs.HOTEN
-      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs
+      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD
+      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs1, BACSi bs2, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
       AND ldv.MALOAIDV = dv.MALOAIDV
       AND hd.MAHD = cls.MAHD
-      AND bs.MABS = cls.MABSTH
+      AND bs1.MABS = cls.MABSTH
+      AND bs2.MABS = pk.MABSC
+      AND bn.MABN = pk.MABN
       AND pk.MAPK = ${req.params.id}`;
 
       const clsList = await db.executeQuery(sqlQuery);
@@ -62,10 +64,23 @@ class ClsController {
         return;
       }
 
-      const formattedDSCLS = clsList.map((itemDKKham) => {
-        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
-        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
-        return { ...itemDKKham, NGAYKHAMMIN };
+      const formattedDSCLS = clsList.map((item) => {
+        const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        item.NGAYKHAM = new Date(item.NGAYKHAM);
+        const INFOBN =
+        item.TENBN +
+          "\n" +
+          item.GIOITINH +
+          " - SĐT: " +
+          item.SDT;
+        const INFOBSTH = "BS " + item.TRINHDOBSTH + " " + item.TENBSTH;
+        const INFOBSCD = "BS " + item.TRINHDOBSCD + " " + item.TENBSCD;
+        const MAKQPKTG = "KQ"+ item.MAKQ +
+          " - PK" +
+          item.MAPK +
+          "\n" +
+          format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...item, MAKQPKTG, INFOBN, INFOBSTH, INFOBSCD, NGAYKHAMMIN };
       });
 
       res.status(200).send({
