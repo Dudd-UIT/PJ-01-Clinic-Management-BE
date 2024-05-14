@@ -91,6 +91,7 @@ class DonThuocController {
       AND th.MATHUOC = loth.MATHUOC
       AND th.MADVT = dvth.MADVT
       AND dth.MAHD = hd.MAHD
+      AND LOTH.TRANGTHAI = 1
       AND dth.MAPK = ${req.params.id}`;
 
       const thuocList = await db.executeQuery(sqlQuery);
