@@ -79,7 +79,6 @@ const handleUserLogin = async (rawData) => {
 };
 
 const handleChangePassword = async (rawData) => {
-  console.log(rawData)
   let username = rawData.username;
   let oldPassword = rawData.oldPassword;
   let newPassword = rawData.newPassword;

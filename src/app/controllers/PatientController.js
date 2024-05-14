@@ -63,7 +63,6 @@ class PatientController {
 
   // POST /benhnhan/insert
   async store(req, res) {
-    console.log(req.body);
     const {
       hoTen,
       gioiTinh,
@@ -77,7 +76,6 @@ class PatientController {
     } = req.body;
 
     const formattedNgaySinh = new Date(ngaySinh);
-    console.log("Insert: ", formattedNgaySinh);
 
     try {
       const formattedNgaySinh = new Date(ngaySinh);

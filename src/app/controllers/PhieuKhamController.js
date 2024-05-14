@@ -18,7 +18,7 @@ class PhieuKhamController {
         v_MABN: maBN,
         v_MADV: dichVu,
         v_MABS: maBS,
-        v_MAPHONG: Math.floor(Math.random() * 11) + 100,
+        v_MAPHONG: Math.floor(Math.random() * 3) + 100,
         v_NGAY_KHAM: new Date(ngayKham),
         v_NGAY_DAT_LICH: null,
         v_TRANGTHAI: "Dang thuc hien",
@@ -83,7 +83,7 @@ class PhieuKhamController {
         par_DiUng: diUng,
         PAR_MADV: dichVu,
         PAR_MABS: maBS,
-        PAR_MAPHONG: Math.floor(Math.random() * 4) + 1,
+        PAR_MAPHONG: Math.floor(Math.random() * 3) + 100,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
         PAR_TRANGTHAI: "Dang thuc hien",
@@ -125,7 +125,7 @@ class PhieuKhamController {
         PAR_MADV: dichVu,
         PAR_MABS: maBS,
         PAR_MAHD: maHD,
-        PAR_MAPHONG: Math.floor(Math.random() * 3) + 1,
+        PAR_MAPHONG: Math.floor(Math.random() * 3) + 100,
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
         PAR_TRANGTHAI: "Chưa thực hiện",
@@ -360,7 +360,6 @@ class PhieuKhamController {
 
   // POST /phieukham/ttk/getById
   async fetchTTKbyIdPK(req, res) {
-    console.log(req.body);
     const { maPK } = req.body;
     try {
       const sqlQuery = `
@@ -402,7 +401,6 @@ class PhieuKhamController {
 
   // POST /phieukham/ttk/dsBenh/getById
   async fetchDSBTTKbyIdPK(req, res) {
-    console.log(req.body);
     const { maPK } = req.body;
     try {
       const sqlQuery = `
@@ -434,6 +432,7 @@ class PhieuKhamController {
 
   // POST /phieukham/update
   async update(req, res) {
+    console.log(req.body)
     const {
       maPK,
       trieuChung,
@@ -444,9 +443,7 @@ class PhieuKhamController {
       canNang,
       benh,
     } = req.body;
-    console.log(benh);
     const maBenh = benh.map(item => item.MABENH)
-    console.log('maBenh', maBenh);
     try {
       const sqlQuery1 = ` 
         BEGIN
