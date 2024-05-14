@@ -176,7 +176,7 @@ class PhieuKhamController {
       // Xử lý kết quả trả về
       res.status(200).json({
         errcode: 0,
-        message: "Cập nhật trạng thái phiếu khám thành công"
+        message: "Cập nhật trạng thái phiếu khám thành công",
       });
     } catch (error) {
       console.error(error);
@@ -266,15 +266,11 @@ class PhieuKhamController {
 
       let objCtpk = ctpk[0];
 
-      setTimeout(
-        () =>
-          res.status(200).send({
-            errcode: 0,
-            message: "Successfull",
-            data: objCtpk,
-          }),
-        1000
-      );
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: objCtpk,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({ error: "Lỗi ở server" });
@@ -336,6 +332,46 @@ class PhieuKhamController {
         res.status(200).json({
           errcode: 1,
           message: "No data found: invalid MAHD",
+          data: pkList,
+        });
+        return;
+      }
+
+      const formattedDSPK = pkList.map((itemDKKham) => {
+        itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...itemDKKham, NGAYKHAMMIN };
+      });
+
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: formattedDSPK,
+      });
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
+
+  // GET /phieukham/lichSuKham/getById/:id-benh-nhan
+  async fetchLSKbyIdBN(req, res) {
+    try {
+      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM
+      FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv
+      WHERE pk.MABN = bn.MABN
+      AND pk.MADVK = dv.MADV
+      AND pk.TRANGTHAITH = 'Đã hoàn thành'
+      AND bn.MABN = ${req.params.id}
+      ORDER BY pk.NGAYKHAM`;
+
+      let pkList = await db.executeQuery(sqlQuery);
+
+      // làm lại khúc ni
+      if (pkList.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MABN or BN ko co PK",
           data: pkList,
         });
         return;

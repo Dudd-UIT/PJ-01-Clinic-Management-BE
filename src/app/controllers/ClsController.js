@@ -85,20 +85,40 @@ class ClsController {
   // GET /getAll
   async fetchAllCls(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBSTH, bs.TRINHDO, dv.TENDV, cls.TRANGTHAITH, hd.TTTT
-      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, BACSI bs, HOADON hd, BENHNHAN bn
+      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT
+      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, BACSI bs1, BACSI bs2, HOADON hd, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
-      AND bs.MABS = cls.MABSTH
+      AND bs1.MABS = cls.MABSTH
+      AND bs2.MABS = pk.MABSC
       AND hd.MAHD = cls.MAHD
-      AND bn.MABN = pk.MABN`;
+      AND bn.MABN = pk.MABN
+      ORDER BY pk.NGAYKHAM`;
 
       const clsList = await db.executeQuery(sqlQuery);
+
+      const formattedClsList = clsList.map((item) => {
+        item.NGAYKHAM = new Date(item.NGAYKHAM);
+        const INFOBN =
+        item.TENBN +
+          "\n" +
+          item.GIOITINH +
+          " - SĐT: " +
+          item.SDT;
+        const INFOBSTH = "BS " + item.TRINHDOBSTH + " " + item.TENBSTH;
+        const INFOBSCD = "BS " + item.TRINHDOBSCD + " " + item.TENBSCD;
+        const MAKQPKTG = "KQ"+ item.MAKQ +
+          " - PK" +
+          item.MAPK +
+          "\n" +
+          format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        return { ...item, MAKQPKTG, INFOBN, INFOBSTH, INFOBSCD };
+      });
 
       res.status(200).send({
         errcode: 0,
         message: "Successful",
-        data: clsList,
+        data: formattedClsList,
       });
     } catch (error) {
       console.error("Error querying database:", error);
