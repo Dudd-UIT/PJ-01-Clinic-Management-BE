@@ -41,7 +41,7 @@ class ClsController {
 
   // POST /cls/update-cls
   async updateCls(req, res) {
-    const { maKQ, moTa, ketLuanCls } = req.body;
+    const { MAKQ, MOTA, KETLUANCLS } = req.body;
     console.log(req.body);
 
     // const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
@@ -56,10 +56,10 @@ class ClsController {
       END; `;
 
       const bindVars = {
-        p_MAKQ: maKQ,
+        p_MAKQ: MAKQ,
         p_TRANGTHAITH: "Đã thực hiện",
-        p_MOTA: moTa,
-        p_KETLUANCLS: ketLuanCls,
+        p_MOTA: MOTA,
+        p_KETLUANCLS: KETLUANCLS,
         // p_IMAGE: byteCharactersData,
       };
 
