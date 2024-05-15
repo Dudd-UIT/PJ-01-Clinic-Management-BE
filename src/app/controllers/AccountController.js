@@ -99,7 +99,7 @@ const getAllAccount = async (req, res) => {
 // GET /account/getAllUserGroup
 const getAllUserGroup = async (req, res) => {
   try {
-    const sqlQuery = `SELECT * FROM NHOM WHERE MANHOM NOT IN (1, 4)`;
+    const sqlQuery = `SELECT * FROM NHOM WHERE MANHOM NOT IN (4)`;
 
     const groups = await db.executeQuery(sqlQuery);
 

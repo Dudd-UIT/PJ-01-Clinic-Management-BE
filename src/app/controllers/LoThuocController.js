@@ -8,8 +8,8 @@ const getAll = async (req, res) => {
                       FROM LOTHUOC L, THUOC T
                       WHERE L.MATHUOC = T.MATHUOC
                       AND L.TRANGTHAI = 1
-                      AND L.HANSD > (SELECT TRUNC(CURRENT_DATE) AS current_date
-                      FROM dual)`;
+                      AND L.HANSD > (SELECT TRUNC(CURRENT_DATE) AS current_date 
+                                     FROM dual)`;
 
     const loThuoc = await db.executeQuery(sqlQuery);
 
@@ -131,16 +131,18 @@ const deleteLoThuoc = async (req, res) => {
 // GET /lothuoc/check
 const checkThuoc = async (req, res) => {
   try {
-    const sqlQuery = `SELECT T.MATHUOC, T.TENTHUOC, SUM(L.SOLUONGTON) AS TONGSOLUONGTON
-                      FROM THUOC T
-                      LEFT JOIN LOTHUOC L ON t.MATHUOC = L.MATHUOC AND L.TRANGTHAI = 1
-                      WHERE T.TRANGTHAI = 1
-                      GROUP BY T.MATHUOC, T.TENTHUOC`;
+    const sqlQuery = `
+    SELECT T.MATHUOC, T.TENTHUOC, SUM(L.SOLUONGTON) AS TONGSOLUONGTON
+    FROM THUOC T
+    LEFT JOIN LOTHUOC L ON T.MATHUOC = L.MATHUOC AND L.TRANGTHAI = 1 AND L.HANSD > TRUNC(CURRENT_DATE)
+    WHERE T.TRANGTHAI = 1
+    GROUP BY T.MATHUOC, T.TENTHUOC`;
 
     const result = await db.executeQuery(sqlQuery);
     const hetThuoc = result
     .filter(item => !item.TONGSOLUONGTON || item.TONGSOLUONGTON === 0)
     .map(item => ({MATHUOC: item.MATHUOC, TENTHUOC: item.TENTHUOC}));
+    console.log('hetThuoc', hetThuoc)
   
     res.status(200).json({
       errcode: 0,

@@ -6,12 +6,12 @@ const dichVuKham = async (req, res) => {
   try {
     const sqlQuery = ` 
         SELECT  TO_CHAR(HD.TDTT, 'MM') AS month, TO_CHAR(HD.TDTT, 'YYYY') AS year, 
-        DV.TENDV AS name, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
+        DV.TENDV AS name, DV.MADV AS id, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
         FROM PHIEUKHAM P, HOADON HD, DICHVU DV, LOAIDV L
         WHERE P.MAHD = HD.MAHD
         AND P.MADVK = DV.MADV
         AND L.MALOAIDV = DV.MALOAIDV
-        GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, L.TENLOAIDV
+        GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, DV.MADV, L.TENLOAIDV
         ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
 
     const tkDichVu = await db.executeQuery(sqlQuery);
@@ -36,12 +36,12 @@ const dichVuCLS = async (req, res) => {
   try {
     const sqlQuery = ` 
         SELECT  TO_CHAR(HD.TDTT, 'MM') AS month, TO_CHAR(HD.TDTT, 'YYYY') AS year, 
-        DV.TENDV AS name, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
+        DV.TENDV AS name, DV.MADV AS id, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
         FROM HOADON HD, DICHVU DV, LOAIDV L, KETQUADICHVUCLS K
         WHERE K.MAHD = HD.MAHD
         AND K.MADVCLS = DV.MADV
         AND L.MALOAIDV = DV.MALOAIDV
-        GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, L.TENLOAIDV
+        GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, DV.MADV, L.TENLOAIDV
         ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
 
     const tkDichVu = await db.executeQuery(sqlQuery);
@@ -65,12 +65,12 @@ const dichVuCLS = async (req, res) => {
 const benh = async (req, res) => {
   try {
     const sqlQuery = `
-        SELECT  TO_CHAR(P.NGAYKHAM, 'MM') AS month, TO_CHAR(P.NGAYKHAM, 'YYYY') AS year, 
-        B.TENBENH AS name, COUNT(*) AS frequency
+        SELECT TO_CHAR(P.NGAYKHAM, 'MM') AS month, TO_CHAR(P.NGAYKHAM, 'YYYY') AS year, 
+        B.TENBENH AS name, B.MAICD AS id, COUNT(*) AS frequency
         FROM BENH B, CHITIETBENH C, PHIEUKHAM P
         WHERE B.MABENH = C.MABENH
         AND P.MAPK = C.MAPK
-        GROUP BY TO_CHAR(P.NGAYKHAM, 'MM'), TO_CHAR(P.NGAYKHAM, 'YYYY'), B.TENBENH
+        GROUP BY TO_CHAR(P.NGAYKHAM, 'MM'), TO_CHAR(P.NGAYKHAM, 'YYYY'), B.TENBENH, B.MAICD
         ORDER BY TO_CHAR(P.NGAYKHAM, 'YYYY'), TO_CHAR(P.NGAYKHAM, 'MM')`;
 
     const tkBenh = await db.executeQuery(sqlQuery);
