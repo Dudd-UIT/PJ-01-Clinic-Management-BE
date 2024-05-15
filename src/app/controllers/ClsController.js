@@ -41,7 +41,7 @@ class ClsController {
 
   // POST /cls/update-cls
   async updateCls(req, res) {
-    const { maKQ, moTa, ketLuanCls } = req.body;
+    const { MAKQ, MOTA, KETLUANCLS } = req.body;
     console.log(req.body);
 
     // const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
@@ -56,10 +56,10 @@ class ClsController {
       END; `;
 
       const bindVars = {
-        p_MAKQ: maKQ,
+        p_MAKQ: MAKQ,
         p_TRANGTHAITH: "Đã thực hiện",
-        p_MOTA: moTa,
-        p_KETLUANCLS: ketLuanCls,
+        p_MOTA: MOTA,
+        p_KETLUANCLS: KETLUANCLS,
         // p_IMAGE: byteCharactersData,
       };
 
@@ -77,7 +77,7 @@ class ClsController {
         message: "Lỗi ở server",
       });
     }
-  } 
+  }
 
   // GET /ds-cls/getById/:id
   async fetchClsById(req, res) {
@@ -109,14 +109,12 @@ class ClsController {
         const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBN =
-        item.TENBN +
-          "\n" +
-          item.GIOITINH +
-          " - SĐT: " +
-          item.SDT;
+          item.TENBN + "\n" + item.GIOITINH + " - SĐT: " + item.SDT;
         const INFOBSTH = "BS " + item.TRINHDOBSTH + " " + item.TENBSTH;
         const INFOBSCD = "BS " + item.TRINHDOBSCD + " " + item.TENBSCD;
-        const MAKQPKTG = "KQ"+ item.MAKQ +
+        const MAKQPKTG =
+          "KQ" +
+          item.MAKQ +
           " - PK" +
           item.MAPK +
           "\n" +
@@ -156,14 +154,12 @@ class ClsController {
       const formattedClsList = clsList.map((item) => {
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBN =
-        item.TENBN +
-          "\n" +
-          item.GIOITINH +
-          " - SĐT: " +
-          item.SDT;
+          item.TENBN + "\n" + item.GIOITINH + " - SĐT: " + item.SDT;
         const INFOBSTH = "BS " + item.TRINHDOBSTH + " " + item.TENBSTH;
         const INFOBSCD = "BS " + item.TRINHDOBSCD + " " + item.TENBSCD;
-        const MAKQPKTG = "KQ"+ item.MAKQ +
+        const MAKQPKTG =
+          "KQ" +
+          item.MAKQ +
           " - PK" +
           item.MAPK +
           "\n" +
