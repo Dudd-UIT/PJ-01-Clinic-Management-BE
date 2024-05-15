@@ -203,7 +203,7 @@ class PhieuKhamController {
       LEFT JOIN HOADON hd1 ON dth.MAHD = hd1.MAHD 
       LEFT JOIN KETQUADICHVUCLS cls ON pk.MAPK = cls.MAPK
       LEFT JOIN HOADON hd2 ON cls.MAHD = hd2.MAHD
-      ORDER BY pk.NGAYKHAM`;
+      ORDER BY pk.NGAYKHAM DESC`;
 
       const dsDKKham = await db.executeQuery(sqlQuery);
 
