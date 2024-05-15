@@ -10,7 +10,8 @@ class DoctorController {
 
       const formattedDoctors = doctors.map((doctor) => {
         doctor.NGAYSINH = new Date(doctor.NGAYSINH);
-        return doctor;
+        const INFOBSTH = "BS " + doctor.TRINHDO + " " + doctor.HOTEN;
+        return {...doctor, INFOBSTH};
       });
 
       res.status(200).json({
