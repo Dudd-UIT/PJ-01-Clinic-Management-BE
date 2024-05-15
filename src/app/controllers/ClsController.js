@@ -57,7 +57,7 @@ class ClsController {
 
       const bindVars = {
         p_MAKQ: MAKQ,
-        p_TRANGTHAITH: "Đã thực hiện",
+        p_TRANGTHAITH: "Đã hoàn thành",
         p_MOTA: MOTA,
         p_KETLUANCLS: KETLUANCLS,
         // p_IMAGE: byteCharactersData,
@@ -147,7 +147,7 @@ class ClsController {
       AND bs2.MABS = pk.MABSC
       AND hd.MAHD = cls.MAHD
       AND bn.MABN = pk.MABN
-      ORDER BY pk.NGAYKHAM`;
+      ORDER BY pk.NGAYKHAM DESC`;
 
       const clsList = await db.executeQuery(sqlQuery);
 
