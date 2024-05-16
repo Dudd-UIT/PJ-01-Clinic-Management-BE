@@ -1,6 +1,9 @@
+const multer = require("multer");
 const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
+const { Json } = require("sequelize/lib/utils");
+const getImage = require("../../util/getImage");
 
 class ClsController {
   // POST /cls/insert-just-cls
@@ -44,15 +47,17 @@ class ClsController {
     const { MAKQ, MOTA, KETLUANCLS } = req.body;
     console.log(req.body);
 
-    // const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
-    // //console.log('base64Data: ', base64Data);
+    const image = req.file ? req.file.filename : null;
 
-    // const byteCharactersData = atob(base64Data);
+    if (image) {
+      console.log("Uploaded file:", image);
+    } else {
+      console.log("No file uploaded");
+    }
 
-    // //console.log('byteCharactersData: ', byteCharactersData);
     try {
       const sqlQuery = ` BEGIN
-        UPDATE_KETQUADVCLS(:p_MAKQ, :p_TRANGTHAITH, :p_MOTA, :p_KETLUANCLS);
+        UPDATE_KETQUADVCLS(:p_MAKQ, :p_TRANGTHAITH, :p_MOTA, :p_KETLUANCLS, :p_IMAGE);
       END; `;
 
       const bindVars = {
@@ -60,7 +65,7 @@ class ClsController {
         p_TRANGTHAITH: "Đã hoàn thành",
         p_MOTA: MOTA,
         p_KETLUANCLS: KETLUANCLS,
-        // p_IMAGE: byteCharactersData,
+        p_IMAGE: image,
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
@@ -94,6 +99,7 @@ class ClsController {
       AND pk.MAPK = ${req.params.id}`;
 
       const clsList = await db.executeQuery(sqlQuery);
+      clsList[0].IMAGE = getImage(clsList[0].IMAGE);
 
       // coi lại khúc ni
       if (clsList.length === 0) {
@@ -139,7 +145,7 @@ class ClsController {
   // GET /getAll
   async fetchAllCls(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.KETLUANCLS
+      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.IMAGE, cls.KETLUANCLS
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, BACSI bs1, BACSI bs2, HOADON hd, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV

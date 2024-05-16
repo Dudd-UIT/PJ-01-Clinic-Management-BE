@@ -21,7 +21,6 @@ const {
   checkUserPermission,
 } = require("../middleware/JWTAction");
 
-
 function route(app) {
   app.use("*", checkUserJWT, checkUserPermission);
 
@@ -52,7 +51,7 @@ function route(app) {
   app.use("/benh", benhRouter);
 
   app.use("/dvt", dvtRouter);
-  
+
   app.use("/role", roleRouter);
 
   app.use("/thongke", thongkeRouter);
