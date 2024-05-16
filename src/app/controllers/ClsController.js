@@ -87,7 +87,7 @@ class ClsController {
   // GET /ds-cls/getById/:id
   async fetchClsById(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS
+      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, hd.TTTT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs1, BACSi bs2, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
@@ -99,7 +99,10 @@ class ClsController {
       AND pk.MAPK = ${req.params.id}`;
 
       const clsList = await db.executeQuery(sqlQuery);
-      clsList[0].IMAGE = getImage(clsList[0].IMAGE);
+      console.log('clsList', clsList);
+
+      // clsList[1].IMAGE = getImage(clsList[1]?.IMAGE);
+      // console.log('clsList[0].IMAGE', clsList[0].IMAGE);
 
       // coi lại khúc ni
       if (clsList.length === 0) {
@@ -112,6 +115,7 @@ class ClsController {
       }
 
       const formattedDSCLS = clsList.map((item) => {
+        item.IMAGE = getImage(item.IMAGE);
         const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBN =
@@ -145,7 +149,7 @@ class ClsController {
   // GET /getAll
   async fetchAllCls(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.IMAGE, cls.KETLUANCLS
+      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.IMAGE, cls.KETLUANCLS
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, BACSI bs1, BACSI bs2, HOADON hd, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
@@ -158,6 +162,7 @@ class ClsController {
       const clsList = await db.executeQuery(sqlQuery);
 
       const formattedClsList = clsList.map((item) => {
+        item.IMAGE = getImage(item.IMAGE);
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBN =
           item.TENBN + "\n" + item.GIOITINH + " - SĐT: " + item.SDT;
