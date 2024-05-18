@@ -7,6 +7,7 @@ router.get("/getUserAccount", accountController.getUserAccount);
 router.get("/getAllAccount", accountController.getAllAccount);
 router.get("/getAllUserGroup", accountController.getAllUserGroup);
 router.post("/login", accountController.login);
+router.post("/register", accountController.register);
 router.post("/logout", accountController.logout);
 router.post("/changePassword", accountController.changePassword);
 router.post("/insert", accountController.registerAccount);

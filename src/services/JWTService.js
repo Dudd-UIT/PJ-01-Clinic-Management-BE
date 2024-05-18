@@ -29,7 +29,11 @@ const getUserInfo = async (user) => {
     default:
       break;
   }
-  const info = await db.executeQuery(sqlQuery);
+  let info = null
+  if(sqlQuery !== ""){
+    info = await db.executeQuery(sqlQuery);
+  }
+
   // if(info){
   //   const formattedInfo = {...info, NGAYSINH: new Date(NGAYSINH)}
   // }

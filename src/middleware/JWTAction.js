@@ -1,8 +1,9 @@
 require("dotenv").config();
+const oracledb = require("oracledb");
 
 const jwt = require("jsonwebtoken");
 
-const nonSecurePaths = ["/account/login", "/account/logout"];
+const nonSecurePaths = ["/account/login", "/account/register", "/account/logout"];
 
 const createJWT = (payload) => {
   let key = process.env.JWT_SECRET;

@@ -1,6 +1,12 @@
-const { handleUserLogin } = require("../../services/UserService");
+const {
+  handleUserLogin,
+  handleRegister,
+} = require("../../services/UserService");
 const db = require("../../config/db");
-const { hashUserPassword, handleChangePassword } = require("../../services/UserService");
+const {
+  hashUserPassword,
+  handleChangePassword,
+} = require("../../services/UserService");
 // GET /account/getUserAccount
 const getUserAccount = async (req, res) => {
   return res.status(200).json({
@@ -120,8 +126,10 @@ const getAllUserGroup = async (req, res) => {
 
 // POST /account/login
 const login = async (req, res) => {
+  console.log(req.body);
   try {
     let Data = await handleUserLogin(req.body);
+    console.log('Data', Data)
 
     if (Data && Data.data && Data.data.access_token) {
       res.cookie("jwt", Data.data.access_token, {
@@ -129,6 +137,28 @@ const login = async (req, res) => {
         maxAge: process.env.JWT_EXPIRES_IN,
       });
     }
+
+    return res.status(200).json({
+      errcode: Data.errcode,
+      message: Data.message,
+      data: Data.data,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      errcode: "-1",
+      message: "error from server",
+      data: [],
+    });
+  }
+};
+
+// POST /account/register
+const register = async (req, res) => {
+  console.log(req.body);
+
+  try {
+    let Data = await handleRegister(req.body);
 
     return res.status(200).json({
       errcode: Data.errcode,
@@ -300,7 +330,7 @@ const updateAccountTTCN = async (req, res) => {
 
   const formattedNgaySinh = new Date(ngaySinh);
 
-  if (vaiTro === 2 || vaiTro === '2') {
+  if (vaiTro === 2 || vaiTro === "2") {
     try {
       const sqlQuery = ` 
         BEGIN
@@ -335,7 +365,7 @@ const updateAccountTTCN = async (req, res) => {
       });
     }
   } else {
-    if (vaiTro === 3 || vaiTro === '3') {
+    if (vaiTro === 3 || vaiTro === "3") {
       try {
         const sqlQuery = ` 
           BEGIN
@@ -351,9 +381,9 @@ const updateAccountTTCN = async (req, res) => {
           par_GioiTinh: gioiTinh,
           par_sdt: sdt,
         };
-  
+
         const result = await db.executeProcedure(sqlQuery, bindVars);
-  
+
         res.status(200).json({
           errcode: 0,
           message: "Cập nhật thông tin lễ tân thành công",
@@ -375,7 +405,6 @@ const updateAccountTTCN = async (req, res) => {
       });
     }
   }
-
 };
 
 // POST /account/updateTTTK (chỉ cập nhật BACSI và LETAN)
@@ -446,10 +475,11 @@ module.exports = {
   getAllAccount,
   getAllUserGroup,
   login,
+  register,
   logout,
   changePassword,
   registerAccount,
   updateAccountTTCN,
   updateAccountTTTK,
-  deleteAccount
+  deleteAccount,
 };
