@@ -43,7 +43,7 @@ const extractToken = (req) => {
 };
 
 const checkUserJWT = (req, res, next) => {
-  if (nonSecurePaths.includes(req.originalUrl)) {
+  if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/hoadon/momo-ipn') {
     return next();
   }
 
@@ -77,7 +77,7 @@ const checkUserJWT = (req, res, next) => {
 };
 
 const checkUserPermission = (req, res, next) => {
-  if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/account/getUserAccount') { 
+  if (nonSecurePaths.includes(req.originalUrl) || req.originalUrl === '/account/getUserAccount' || req.originalUrl === '/hoadon/momo-ipn') { 
     return next();
   }
 
