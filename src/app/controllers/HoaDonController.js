@@ -2,6 +2,7 @@ const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
 const { DateTime2 } = require("mssql");
+const axios = require("axios");
 
 class HoaDonController {
   // POST /hoadon/insert
@@ -110,6 +111,117 @@ class HoaDonController {
         errcode: 0,
         message: "Successful",
         data: formatedHdList,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
+  // POST /hoadon/test-momo
+  async testMOMO(req, res) {
+    try {
+      var partnerCode = "MOMO";
+      var accessKey = "F8BBA842ECF85";
+      var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+      var requestId = partnerCode + new Date().getTime();
+      var orderId = requestId;
+      var orderInfo = "Thanh toán phiếu khám";
+      var redirectUrl = "bcareful://dsdv";
+      var ipnUrl = "192.168.1.21:3001/hoadon/momo-ipn";
+      // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
+      var amount = "50000";
+      var requestType = "captureWallet";
+      var extraData = ""; //pass empty value if your merchant does not have stores
+
+      //before sign HMAC SHA256 with format
+      //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+      var rawSignature =
+        "accessKey=" +
+        accessKey +
+        "&amount=" +
+        amount +
+        "&extraData=" +
+        extraData +
+        "&ipnUrl=" +
+        ipnUrl +
+        "&orderId=" +
+        orderId +
+        "&orderInfo=" +
+        orderInfo +
+        "&partnerCode=" +
+        partnerCode +
+        "&redirectUrl=" +
+        redirectUrl +
+        "&requestId=" +
+        requestId +
+        "&requestType=" +
+        requestType;
+      //puts raw signature
+      console.log("--------------------RAW SIGNATURE----------------");
+      console.log(rawSignature);
+      //signature
+      const crypto = require("crypto");
+      var signature = crypto
+        .createHmac("sha256", secretkey)
+        .update(rawSignature)
+        .digest("hex");
+      console.log("--------------------SIGNATURE----------------");
+      console.log(signature);
+
+      const requestBody = {
+        partnerCode: partnerCode,
+        accessKey: accessKey,
+        requestId: requestId,
+        amount: amount,
+        orderId: orderId,
+        orderInfo: orderInfo,
+        redirectUrl: redirectUrl,
+        ipnUrl: ipnUrl,
+        extraData: extraData,
+        requestType: requestType,
+        signature: signature,
+        lang: "en",
+      };
+
+      const response = await axios.post(
+        "https://test-payment.momo.vn/v2/gateway/api/create",
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Xử lý kết quả trả về
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: response.data,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        errcode: -1,
+        message: "Lỗi ở server",
+      });
+    }
+  }
+
+  // POST /hoadon/momo-ipn
+  async momoIPN(req, res) {
+    // const { resultCode, message, payType, responseTime, amount, ...others } =
+    //   req.body;
+    try {
+      // Xử lý kết quả trả về
+      console.log(req.body);
+      res.status(204).json({
+        errcode: 0,
+        message: "Successful",
       });
     } catch (error) {
       console.error(error);

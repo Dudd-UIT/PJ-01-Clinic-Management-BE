@@ -6,6 +6,8 @@ const db = require("./config/db");
 const route = require("./routes");
 const app = express();
 const cookieParser = require("cookie-parser");
+const { Server } = require("socket.io");
+const http = require("http");
 
 const port = process.env.PORT;
 // Custom CORS middleware
@@ -56,7 +58,22 @@ app.use(cookieParser());
 // Initialize routes
 route(app);
 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("User socket connected >>>>>>>", socket.id);
+  socket.on("send-message", (data) => {
+    console.log("Message from client>>>>>>>>", data);
+    socket.broadcast.emit("receive-message", {...data, id: socket.id});
+  });
+});
+
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
