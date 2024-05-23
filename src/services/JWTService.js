@@ -26,11 +26,16 @@ const getUserInfo = async (user) => {
                   FROM LETAN
                   WHERE MATK = ${userId}`;
       break;
+    case 4:
+      sqlQuery = `SELECT *
+                  FROM BENHNHAN
+                  WHERE MATK = ${userId}`;
+      break;
     default:
       break;
   }
-  let info = null
-  if(sqlQuery !== ""){
+  let info = null;
+  if (sqlQuery !== "") {
     info = await db.executeQuery(sqlQuery);
   }
 
@@ -43,5 +48,5 @@ const getUserInfo = async (user) => {
 
 module.exports = {
   getGroupWithRoles,
-  getUserInfo
+  getUserInfo,
 };

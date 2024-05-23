@@ -90,6 +90,35 @@ const benh = async (req, res) => {
   }
 };
 
+// GET /thongke/thuoc
+const thuoc = async (req, res) => {
+  try {
+    const sqlQuery = `
+      SELECT TO_CHAR(D.NGAYLAP, 'MM') AS month, TO_CHAR(D.NGAYLAP, 'YYYY') AS year, 
+      T.TENTHUOC AS name, T.MATHUOC AS id, SUM(SOLUONGTHUOC) AS frequency
+      FROM THUOC T, CTDT C, DONTHUOC D
+      WHERE T.MATHUOC = C.MATHUOC
+      AND D.MADT = C.MADT
+      GROUP BY TO_CHAR(D.NGAYLAP, 'MM'), TO_CHAR(D.NGAYLAP, 'YYYY'), T.TENTHUOC, T.MATHUOC
+      ORDER BY TO_CHAR(D.NGAYLAP, 'YYYY'), TO_CHAR(D.NGAYLAP, 'MM')`;
+
+    const tkBenh = await db.executeQuery(sqlQuery);
+
+    res.status(200).json({
+      errcode: 0,
+      message: "Successful",
+      data: tkBenh,
+    });
+  } catch (error) {
+    console.error("Error querying database:", error);
+    res.status(500).json({
+      errcode: -1,
+      message: "Error from server",
+      data: [],
+    });
+  }
+};
+
 // GET /thongke/chatluong
 const doanhThuLuotKhach = async (req, res) => {
   try {
@@ -152,6 +181,7 @@ module.exports = {
   dichVuKham,
   dichVuCLS,
   benh,
+  thuoc,
   doanhThuLuotKhach,
   chatLuong,
 };
