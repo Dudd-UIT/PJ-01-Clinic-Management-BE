@@ -3,7 +3,15 @@ const oracledb = require("oracledb");
 
 const jwt = require("jsonwebtoken");
 
-const nonSecurePaths = ["/account/login", "/account/register", "/account/logout"];
+const nonSecurePaths = [
+  "/account/login",
+  "/account/register/tk-bn",
+  "/account/register/tk",
+  "/account/verify",
+  "/account/confirm",
+  "/account/logout",
+  "/benhnhan/getAll/noMaTK"
+];
 
 const createJWT = (payload) => {
   let key = process.env.JWT_SECRET;

@@ -1,12 +1,16 @@
 const {
   handleUserLogin,
-  handleRegister,
+  handleRegisterTK_BN,
+  handleRegisterTK,
+  handleVerify,
+  handleConfirmUser,
 } = require("../../services/UserService");
 const db = require("../../config/db");
 const {
   hashUserPassword,
   handleChangePassword,
 } = require("../../services/UserService");
+
 // GET /account/getUserAccount
 const getUserAccount = async (req, res) => {
   return res.status(200).json({
@@ -105,7 +109,7 @@ const getAllAccount = async (req, res) => {
 // GET /account/getAllUserGroup
 const getAllUserGroup = async (req, res) => {
   try {
-    const sqlQuery = `SELECT * FROM NHOM WHERE MANHOM NOT IN (4)`;
+    const sqlQuery = `SELECT * FROM NHOM`;
 
     const groups = await db.executeQuery(sqlQuery);
 
@@ -129,7 +133,6 @@ const login = async (req, res) => {
   console.log(req.body);
   try {
     let Data = await handleUserLogin(req.body);
-    console.log('Data', Data)
 
     if (Data && Data.data && Data.data.access_token) {
       res.cookie("jwt", Data.data.access_token, {
@@ -153,12 +156,80 @@ const login = async (req, res) => {
   }
 };
 
-// POST /account/register
-const register = async (req, res) => {
+// POST /account/verify
+const verify = async (req, res) => {
+  console.log(req.body);
+  const { email } = req.body;
+
+  try {
+    const Data = await handleVerify(email);
+    console.log("Data", Data);
+
+    res.status(200).json({
+      errcode: Data.errcode,
+      message: Data.message,
+      data: Data.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      errcode: "-1",
+      message: "Lỗi ở server",
+      data: "",
+    });
+  }
+};
+
+// POST /account/confirm
+const confirmUser = async (req, res) => {
+  console.log(req.body);
+  try {
+    const Data = await handleConfirmUser(req.body);
+    console.log("Data", Data);
+
+    res.status(200).json({
+      errcode: Data.errcode,
+      message: Data.message,
+      data: Data.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      errcode: "-1",
+      message: "Lỗi ở server",
+      data: [],
+    });
+  }
+};
+
+// POST /account/register/tk-bn
+const registerTK_BN = async (req, res) => {
   console.log(req.body);
 
   try {
-    let Data = await handleRegister(req.body);
+    let Data = await handleRegisterTK_BN(req.body);
+
+    return res.status(200).json({
+      errcode: Data.errcode,
+      message: Data.message,
+      data: Data.data,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      errcode: "-1",
+      message: "error from server",
+      data: [],
+    });
+  }
+};
+
+// POST /account/register/tk
+const registerTK = async (req, res) => {
+  console.log(req.body);
+
+  try {
+    let Data = await handleRegisterTK(req.body);
 
     return res.status(200).json({
       errcode: Data.errcode,
@@ -475,7 +546,10 @@ module.exports = {
   getAllAccount,
   getAllUserGroup,
   login,
-  register,
+  verify,
+  confirmUser,
+  registerTK_BN,
+  registerTK,
   logout,
   changePassword,
   registerAccount,
