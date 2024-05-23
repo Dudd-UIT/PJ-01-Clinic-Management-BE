@@ -361,7 +361,6 @@ class PhieuKhamController {
       FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv
       WHERE pk.MABN = bn.MABN
       AND pk.MADVK = dv.MADV
-      AND pk.TRANGTHAITH = 'Đã hoàn thành'
       AND bn.MABN = ${req.params.id}
       ORDER BY pk.NGAYKHAM`;
 
