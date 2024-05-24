@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
+const {getSTTKham} = require("../../util/calculateSTT");
 
 class PhieuKhamController {
   // POST /phieukham/insert-pk -- api nay insert PK cho cac BN da co ho so
@@ -129,7 +130,7 @@ class PhieuKhamController {
         PAR_NGAY_KHAM: new Date(ngayKham),
         PAR_NGAY_DAT_LICH: null,
         PAR_TRANGTHAI: "Chưa thực hiện",
-        PAR_STT: Math.floor(Math.random() * 20) + 1,
+        PAR_STT: getSTTKham(new Date()), //Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
         PAR_CHIEUCAO: null,
         PAR_CANNANG: null,

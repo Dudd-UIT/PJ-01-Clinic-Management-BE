@@ -44,7 +44,7 @@ class DonThuocController {
       SOLANUONG,
       SOLUONGUONG,
       SOLUONGTHUOC,
-      GIABAN,
+      GIABANLUCKE,
       GHICHU,
       ...others
     } = req.body;
@@ -60,7 +60,7 @@ class DonThuocController {
         PAR_SOLUONGUONG: SOLUONGUONG,
         PAR_TRANGTHAI: "Chưa đặt lịch",
         PAR_SOLUONGTHUOC: SOLUONGTHUOC,
-        PAR_GIABAN: GIABAN,
+        PAR_GIABAN: GIABANLUCKE,
         PAR_GHICHU: GHICHU,
       };
 
@@ -84,14 +84,12 @@ class DonThuocController {
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `
-      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABAN, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT
-      FROM DONTHUOC dth, CTDT, THUOC th, LOTHUOC loth, DONVITHUOC dvth, HOADON hd
+      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT
+      FROM DONTHUOC dth, CTDT, THUOC th, DONVITHUOC dvth, HOADON hd
       WHERE dth.MADT = ctdt.MADT
       AND ctdt.MATHUOC = th.MATHUOC
-      AND th.MATHUOC = loth.MATHUOC
       AND th.MADVT = dvth.MADVT
       AND dth.MAHD = hd.MAHD
-      AND LOTH.TRANGTHAI = 1
       AND dth.MAPK = ${req.params.id}`;
 
       const thuocList = await db.executeQuery(sqlQuery);
@@ -107,7 +105,7 @@ class DonThuocController {
       }
 
       const formattedThuocList = thuocList.map((thuoc) => {
-        return { ...thuoc, thanhTien: thuoc.GIABAN * thuoc.SOLUONGTHUOC };
+        return { ...thuoc, thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC };
       });
 
       res.status(200).send({
