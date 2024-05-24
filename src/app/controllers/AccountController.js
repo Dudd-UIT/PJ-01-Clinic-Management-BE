@@ -87,7 +87,7 @@ const getAllAccount = async (req, res) => {
     LEFT JOIN BACSI B ON TK.MATK = B.MATK
     LEFT JOIN LETAN L ON TK.MATK = L.MATK
     WHERE NH.MANHOM NOT IN (1, 4)
-    AND TRANGTHAI = 1`;
+    AND TK.TRANGTHAI = 1`;
 
     const DSTK = await db.executeQuery(sqlQuery);
 
@@ -109,7 +109,7 @@ const getAllAccount = async (req, res) => {
 // GET /account/getAllUserGroup
 const getAllUserGroup = async (req, res) => {
   try {
-    const sqlQuery = `SELECT * FROM NHOM`;
+    const sqlQuery = `SELECT * FROM NHOM WHERE TRANGTHAI = 1`;
 
     const groups = await db.executeQuery(sqlQuery);
 
