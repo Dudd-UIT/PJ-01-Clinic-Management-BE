@@ -14,7 +14,7 @@ const roleRouter = require('./role')
 const thuocRouter = require('./thuoc')
 const lothuocRouter = require('./lothuoc')
 const thongkeRouter = require('./thongke')
-
+const ldvRouter = require('./ldv')
 
 const {
   checkUserJWT,
@@ -55,6 +55,8 @@ function route(app) {
   app.use("/role", roleRouter);
 
   app.use("/thongke", thongkeRouter);
+
+  app.use("/ldv", ldvRouter);
 
 }
 

@@ -130,7 +130,7 @@ const handleUserLogin = async (rawData) => {
           username: user[0].USERNAME,
           groupName,
           groupID,
-          userInfo,
+          userInfo
         };
         let token = createJWT(payload);
         return {

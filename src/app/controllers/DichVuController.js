@@ -5,11 +5,10 @@ class DichVuController {
   // GET /dichvu/getAll
   async getAll(req, res) {
     try {
-      const sqlQuery =
-        `SELECT MADV, D.MALOAIDV, TENDV, GIADV, TENLOAIDV 
+      const sqlQuery = `SELECT MADV, D.MALOAIDV, TENDV, GIADV, TENLOAIDV 
           FROM DICHVU D, LOAIDV L 
           WHERE L.MALOAIDV = D.MALOAIDV
-          AND TRANGTHAI = 1`;
+          AND D.TRANGTHAI = 1`;
       const dichvus = await db.executeQuery(sqlQuery);
       setTimeout(
         () =>
@@ -33,18 +32,14 @@ class DichVuController {
   // GET /dichvu/getAllLDV
   async getAllLDV(req, res) {
     try {
-      const sqlQuery = "SELECT * FROM LOAIDV";
+      const sqlQuery = "SELECT * FROM LOAIDV WHERE TRANGTHAI = 1";
       const loaiDichVu = await db.executeQuery(sqlQuery);
 
-      setTimeout(
-        () =>
-          res.status(200).json({
-            errcode: 0,
-            message: "Successful",
-            data: loaiDichVu,
-          }),
-        1000
-      );
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: loaiDichVu,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({
