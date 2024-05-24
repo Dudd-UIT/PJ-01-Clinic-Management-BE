@@ -5,14 +5,15 @@ const db = require("../../config/db");
 const dichVuKham = async (req, res) => {
   try {
     const sqlQuery = ` 
-        SELECT  TO_CHAR(HD.TDTT, 'MM') AS month, TO_CHAR(HD.TDTT, 'YYYY') AS year, 
-        DV.TENDV AS name, DV.MADV AS id, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
-        FROM PHIEUKHAM P, HOADON HD, DICHVU DV, LOAIDV L
-        WHERE P.MAHD = HD.MAHD
-        AND P.MADVK = DV.MADV
-        AND L.MALOAIDV = DV.MALOAIDV
-        GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, DV.MADV, L.TENLOAIDV
-        ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
+    SELECT  TO_CHAR(HD.TDTT, 'MM') AS month, TO_CHAR(HD.TDTT, 'YYYY') AS year, 
+    DV.TENDV AS name, DV.MADV AS id, COUNT(*) AS frequency, SUM(HD.THANHTIEN) AS bill, L.TENLOAIDV AS type
+    FROM PHIEUKHAM P, HOADON HD, DICHVU DV, LOAIDV L
+    WHERE P.MAHD = HD.MAHD
+    AND P.MADVK = DV.MADV
+    AND L.MALOAIDV = DV.MALOAIDV
+    AND HD.TTTT = 'Đã thanh toán'
+    GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, DV.MADV, L.TENLOAIDV
+    ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
 
     const tkDichVu = await db.executeQuery(sqlQuery);
 
@@ -41,6 +42,7 @@ const dichVuCLS = async (req, res) => {
         WHERE K.MAHD = HD.MAHD
         AND K.MADVCLS = DV.MADV
         AND L.MALOAIDV = DV.MALOAIDV
+        AND HD.TTTT = 'Đã thanh toán'
         GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY'), DV.TENDV, DV.MADV, L.TENLOAIDV
         ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
 
@@ -127,6 +129,7 @@ const doanhThuLuotKhach = async (req, res) => {
         COUNT(*) AS guest, SUM(HD.THANHTIEN) AS bill
         FROM PHIEUKHAM P, HOADON HD
         WHERE P.MAHD = HD.MAHD
+        AND HD.TTTT = 'Đã thanh toán'
         GROUP BY TO_CHAR(HD.TDTT, 'MM'), TO_CHAR(HD.TDTT, 'YYYY')
         ORDER BY TO_CHAR(HD.TDTT, 'YYYY'), TO_CHAR(HD.TDTT, 'MM')`;
 
@@ -152,13 +155,13 @@ const chatLuong = async (req, res) => {
   try {
     const sqlQuery = `
         SELECT 
-            'data-' || bn.MABN AS id,
+            'data-' || bn.MABN AS id, bn.HOTEN as NAME,
             COUNT(pk.MAPK) AS x1,
             tinh_khoang_cach_kham_trung_binh(bn.MABN) AS x2,
             TO_CHAR(pk.NGAYKHAM, 'YYYY') AS year
         FROM BENHNHAN bn, PHIEUKHAM pk 
         WHERE bn.MABN = pk.MABN
-        GROUP BY bn.MABN, TO_CHAR(pk.NGAYKHAM, 'YYYY')`;
+        GROUP BY bn.MABN, bn.HOTEN, TO_CHAR(pk.NGAYKHAM, 'YYYY')`;
 
     const tkChatLuong = await db.executeQuery(sqlQuery);
 
