@@ -191,7 +191,7 @@ class PhieuKhamController {
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, 
+      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.MABS, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, 
       hd.MAHD as MAHDPK, hd.TTTT as TTTTPK,
       hd1.THANHTIEN AS TIENTHUOC, hd1.TTTT AS TTTTDTH, 
       hd2.THANHTIEN AS TIENCLS, hd2.TTTT AS TTTTCLS
