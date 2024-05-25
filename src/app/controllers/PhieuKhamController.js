@@ -320,7 +320,7 @@ class PhieuKhamController {
   // GET /phieukham/dspk/getById/:id-hoa-don
   async fetchPKbyIdHD(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN, pk.NGAYKHAM
+      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, hd.TTTT, hd.THANHTIEN, pk.NGAYKHAM, pk.GIADVLUCDK
       FROM PHIEUKHAM pk, HOADON hd, DICHVU dv
       WHERE pk.MAHD = hd.MAHD
       AND pk.MADVK = dv.MADV
