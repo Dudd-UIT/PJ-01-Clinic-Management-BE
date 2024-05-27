@@ -246,26 +246,33 @@ class PhieuKhamController {
   // GET /phieukham/chitiet-pk/getById/:id
   async fetchKQKham(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, 
+      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, TTTT,
       LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG
-      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv
+      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv, HOADON hd
       WHERE pk.MABSC = bs.MABS
       AND pk.MADVK = dv.MADV
+      AND hd.MAHD = pk.MAHD
       AND pk.MAPK = ${req.params.id}`;
 
       let ctpk = await db.executeQuery(sqlQuery);
 
+      const formattedCTPK = ctpk.map((item) => {
+        const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        item.NGAYKHAM = new Date(item.NGAYKHAM);
+        const INFOBS = "BS " + item.TRINHDO + " " + item.TENBS;
+        return { ...item, INFOBS, NGAYKHAMMIN };
+      });
       // làm lại khúc ni
       if (ctpk.length === 0) {
         res.status(200).json({
           errcode: 1,
           message: "No data found: invalid MAPK",
-          data: ctpk,
+          data: formattedCTPK,
         });
         return;
       }
 
-      let objCtpk = ctpk[0];
+      let objCtpk = formattedCTPK[0];
 
       res.status(200).send({
         errcode: 0,
