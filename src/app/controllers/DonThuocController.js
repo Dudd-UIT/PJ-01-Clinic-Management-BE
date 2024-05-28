@@ -94,7 +94,7 @@ class DonThuocController {
       AND dth.MAPK = ${req.params.id}`;
 
       const thuocList = await db.executeQuery(sqlQuery);
-      console.log('thuocList', thuocList);
+      console.log("thuocList", thuocList);
       // coi lại khúc ni
       if (thuocList.length === 0) {
         res.status(200).json({
@@ -106,10 +106,16 @@ class DonThuocController {
       }
 
       const formattedThuocList = thuocList.map((thuoc) => {
-        const TDTTMIN = format(thuoc.TDTT, "dd/MM/yyyy - HH:mm");
+        const TDTTMIN = thuoc.TDTT
+          ? format(thuoc.TDTT, "dd/MM/yyyy - HH:mm")
+          : "chưa thanh toán";
         thuoc.TDTT = new Date(thuoc.TDTT);
 
-        return { ...thuoc, thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC, TDTTMIN };
+        return {
+          ...thuoc,
+          thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC,
+          TDTTMIN,
+        };
       });
 
       res.status(200).send({
