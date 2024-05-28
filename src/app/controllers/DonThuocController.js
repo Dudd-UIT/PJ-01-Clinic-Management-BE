@@ -108,7 +108,7 @@ class DonThuocController {
       const formattedThuocList = thuocList.map((thuoc) => {
         const TDTTMIN = thuoc.TDTT
           ? format(thuoc.TDTT, "dd/MM/yyyy - HH:mm")
-          : "chưa thanh toán";
+          : "Chưa thanh toán";
         thuoc.TDTT = new Date(thuoc.TDTT);
 
         return {
