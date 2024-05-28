@@ -1,7 +1,7 @@
 const db = require("../../config/db");
 const oracledb = require("oracledb");
 const { format } = require("date-fns");
-const {getSTTKham} = require("../../util/calculateSTT");
+const { getSTTKham } = require("../../util/calculateSTT");
 
 class PhieuKhamController {
   // POST /phieukham/insert-pk -- api nay insert PK cho cac BN da co ho so
@@ -247,7 +247,7 @@ class PhieuKhamController {
   async fetchKQKham(req, res) {
     try {
       const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, TTTT,
-      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG
+      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG, hd.MAHD, hd.TDTT, hd.THANHTIEN
       FROM PHIEUKHAM pk, BACSI bs, DICHVU dv, HOADON hd
       WHERE pk.MABSC = bs.MABS
       AND pk.MADVK = dv.MADV
@@ -258,9 +258,13 @@ class PhieuKhamController {
 
       const formattedCTPK = ctpk.map((item) => {
         const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const TDTTMIN = item.TDTT
+          ? format(item.TDTT, "dd/MM/yyyy - HH:mm")
+          : "Chưa thanh toán";
+
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBS = "BS " + item.TRINHDO + " " + item.TENBS;
-        return { ...item, INFOBS, NGAYKHAMMIN };
+        return { ...item, INFOBS, NGAYKHAMMIN, TDTTMIN };
       });
       // làm lại khúc ni
       if (ctpk.length === 0) {
@@ -475,7 +479,7 @@ class PhieuKhamController {
 
   // POST /phieukham/update
   async update(req, res) {
-    console.log(req.body)
+    console.log(req.body);
     const {
       maPK,
       trieuChung,
@@ -486,7 +490,7 @@ class PhieuKhamController {
       canNang,
       benh,
     } = req.body;
-    const maBenh = benh.map(item => item.MABENH)
+    const maBenh = benh.map((item) => item.MABENH);
     try {
       const sqlQuery1 = ` 
         BEGIN
