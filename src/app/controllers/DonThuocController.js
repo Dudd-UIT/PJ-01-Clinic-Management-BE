@@ -84,7 +84,7 @@ class DonThuocController {
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `
-      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, hd.THANHTIEN, TTTT, TDTT, HOTEN
+      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, hd.THANHTIEN, TTTT, TDTT, HOTEN, NGAYLAP
       FROM DONTHUOC dth, CTDT, THUOC th, DONVITHUOC dvth, HOADON hd, LETAN lt
       WHERE dth.MADT = ctdt.MADT
       AND ctdt.MATHUOC = th.MATHUOC
@@ -109,12 +109,14 @@ class DonThuocController {
         const TDTTMIN = thuoc.TDTT
           ? format(thuoc.TDTT, "dd/MM/yyyy - HH:mm")
           : "Chưa thanh toán";
+        const THOIGIANLAP = format(thuoc.NGAYLAP, "dd/MM/yyyy - HH:mm");
         thuoc.TDTT = new Date(thuoc.TDTT);
 
         return {
           ...thuoc,
           thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC,
           TDTTMIN,
+          THOIGIANLAP,
         };
       });
 
