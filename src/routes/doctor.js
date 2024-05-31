@@ -1,9 +1,9 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const DoctorController = require('../app/controllers/DoctorController')
+const DoctorController = require("../app/controllers/DoctorController");
 
-router.get('/getAll', DoctorController.getAll)
+router.get("/getAll", DoctorController.getAll);
+router.post("/getByDate", DoctorController.getByDate);
 
-
-module.exports = router
+module.exports = router;

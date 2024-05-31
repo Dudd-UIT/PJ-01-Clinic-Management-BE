@@ -10,15 +10,11 @@ class DichVuController {
           WHERE L.MALOAIDV = D.MALOAIDV
           AND D.TRANGTHAI = 1`;
       const dichvus = await db.executeQuery(sqlQuery);
-      setTimeout(
-        () =>
-          res.status(200).json({
-            errcode: 0,
-            message: "Successful",
-            data: dichvus,
-          }),
-        1000
-      );
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: dichvus,
+      });
     } catch (error) {
       console.error("Error querying database:", error);
       res.status(500).json({
