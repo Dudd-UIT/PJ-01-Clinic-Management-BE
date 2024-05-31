@@ -84,7 +84,7 @@ class DonThuocController {
   async fetchDSThuoc(req, res) {
     try {
       const sqlQuery = `
-      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT, TDTT, HOTEN
+      SELECT distinct th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, hd.THANHTIEN, TTTT, TDTT, HOTEN, NGAYLAP
       FROM DONTHUOC dth, CTDT, THUOC th, DONVITHUOC dvth, HOADON hd, LETAN lt
       WHERE dth.MADT = ctdt.MADT
       AND ctdt.MATHUOC = th.MATHUOC
@@ -94,7 +94,7 @@ class DonThuocController {
       AND dth.MAPK = ${req.params.id}`;
 
       const thuocList = await db.executeQuery(sqlQuery);
-      console.log('thuocList', thuocList);
+      console.log("thuocList", thuocList);
       // coi lại khúc ni
       if (thuocList.length === 0) {
         res.status(200).json({
@@ -106,10 +106,18 @@ class DonThuocController {
       }
 
       const formattedThuocList = thuocList.map((thuoc) => {
-        const TDTTMIN = format(thuoc.TDTT, "dd/MM/yyyy - HH:mm");
+        const TDTTMIN = thuoc.TDTT
+          ? format(thuoc.TDTT, "dd/MM/yyyy - HH:mm")
+          : "Chưa thanh toán";
+        const THOIGIANLAP = format(thuoc.NGAYLAP, "dd/MM/yyyy - HH:mm");
         thuoc.TDTT = new Date(thuoc.TDTT);
 
-        return { ...thuoc, thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC, TDTTMIN };
+        return {
+          ...thuoc,
+          thanhTien: thuoc.GIABANLUCKE * thuoc.SOLUONGTHUOC,
+          TDTTMIN,
+          THOIGIANLAP,
+        };
       });
 
       res.status(200).send({

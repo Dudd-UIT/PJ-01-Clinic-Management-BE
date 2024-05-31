@@ -42,17 +42,15 @@ class HoaDonController {
 
   // POST /hoadon/thanhtoan
   async thanhToan(req, res) {
-    const { MAHD, maLT, MALOAIHD, tdtt, tttt, THANHTIEN, pttt, ...others } =
-      req.body;
+    const { MAHD, maLT, tdtt, tttt, THANHTIEN, pttt, ...others } = req.body;
     try {
       const sqlQuery = `BEGIN
-        UPDATE_HOADON(:p_maHD, :p_maLT, :p_maLHD, :p_tdtt, :p_tttt, :p_thanhTien, :p_pttt);
+        UPDATE_HOADON(:p_maHD, :p_maLT, :p_tdtt, :p_tttt, :p_thanhTien, :p_pttt);
       END;`;
 
       const bindVars = {
         p_maHD: MAHD,
         p_maLT: maLT,
-        p_maLHD: MALOAIHD,
         p_tdtt: new Date(tdtt),
         p_tttt: tttt,
         p_thanhTien: THANHTIEN,
@@ -123,17 +121,18 @@ class HoaDonController {
 
   // POST /hoadon/test-momo
   async testMOMO(req, res) {
+    const { MAHD, TENLOAIDV, THANHTIEN, ...others } = req.body;
     try {
       var partnerCode = "MOMO";
       var accessKey = "F8BBA842ECF85";
       var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
       var requestId = partnerCode + new Date().getTime();
       var orderId = requestId;
-      var orderInfo = "Thanh toán phiếu khám";
+      var orderInfo = "Thanh toán " + (TENLOAIDV || "Hóa đơn khám");
       var redirectUrl = "bcareful://dsdv";
       var ipnUrl = "192.168.1.21:3001/hoadon/momo-ipn";
       // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
-      var amount = "50000";
+      var amount = THANHTIEN/10;
       var requestType = "captureWallet";
       var extraData = ""; //pass empty value if your merchant does not have stores
 

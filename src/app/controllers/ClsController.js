@@ -11,7 +11,7 @@ class ClsController {
     const { MAPK, MABS, MAHD, MADV, ...others } = req.body;
     try {
       const sqlQuery = ` BEGIN
-        INSERT_KETQUADVCLS(:p_MAPK, :p_MABSTH, :p_MADVCLS, :p_MAPHONG, :p_MAHD, :p_TRANGTHAITH, :p_STT, :p_MOTA, :p_KETLUANCLS);
+        INSERT_KETQUADVCLS(:p_MAPK, :p_MABSTH, :p_MADVCLS, :p_MAPHONG, :p_MAHD, :p_TRANGTHAITH, :p_STT, :p_MOTA, :p_KETLUANCLS, :p_THOIGIANTAO);
       END; `;
 
       const bindVars = {
@@ -24,6 +24,7 @@ class ClsController {
         p_STT: Math.floor(Math.random() * 20) + 1,
         p_MOTA: null,
         p_KETLUANCLS: null,
+        p_THOIGIANTAO: new Date(),
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
@@ -87,7 +88,7 @@ class ClsController {
   // GET /ds-cls/getById/:id
   async fetchClsById(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, cls.GIADVCLSLUCDK, hd.TTTT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS
+      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, cls.GIADVCLSLUCDK, hd.TTTT, hd.MAHD, hd.TDTT, hd.THANHTIEN, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS, cls.THOIGIANTAO
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs1, BACSi bs2, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
@@ -99,7 +100,7 @@ class ClsController {
       AND pk.MAPK = ${req.params.id}`;
 
       const clsList = await db.executeQuery(sqlQuery);
-      console.log('clsList', clsList);
+      console.log("clsList", clsList);
 
       // clsList[1].IMAGE = getImage(clsList[1]?.IMAGE);
       // console.log('clsList[0].IMAGE', clsList[0].IMAGE);
@@ -116,20 +117,27 @@ class ClsController {
 
       const formattedDSCLS = clsList.map((item) => {
         item.IMAGE = getImage(item.IMAGE);
-        const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const NGAYKHAMMIN = format(item.THOIGIANTAO, "dd/MM/yyyy - HH:mm");
+        const TDTTMIN = item.TDTT
+          ? format(item.TDTT, "dd/MM/yyyy - HH:mm")
+          : "Chưa thanh toán";
+
         item.NGAYKHAM = new Date(item.NGAYKHAM);
         const INFOBN =
           item.TENBN + "\n" + item.GIOITINH + " - SĐT: " + item.SDT;
         const INFOBSTH = "BS " + item.TRINHDOBSTH + " " + item.TENBSTH;
         const INFOBSCD = "BS " + item.TRINHDOBSCD + " " + item.TENBSCD;
         const MAKQPKTG =
-          "KQ" +
-          item.MAKQ +
-          " - PK" +
-          item.MAPK +
-          "\n" +
-          format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
-        return { ...item, MAKQPKTG, INFOBN, INFOBSTH, INFOBSCD, NGAYKHAMMIN };
+          "KQ" + item.MAKQ + " - PK" + item.MAPK + "\n" + NGAYKHAMMIN;
+        return {
+          ...item,
+          MAKQPKTG,
+          INFOBN,
+          INFOBSTH,
+          INFOBSCD,
+          NGAYKHAMMIN,
+          TDTTMIN,
+        };
       });
 
       res.status(200).send({
@@ -149,7 +157,7 @@ class ClsController {
   // GET /getAll
   async fetchAllCls(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.IMAGE, cls.KETLUANCLS
+      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, cls.STT, bn.MABN, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, dv.TENDV, cls.TRANGTHAITH, hd.TTTT, cls.MOTA, cls.IMAGE, cls.KETLUANCLS, cls.THOIGIANTAO
       FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, BACSI bs1, BACSI bs2, HOADON hd, BENHNHAN bn
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
@@ -174,7 +182,7 @@ class ClsController {
           " - PK" +
           item.MAPK +
           "\n" +
-          format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+          format(item.THOIGIANTAO, "dd/MM/yyyy - HH:mm");
         return { ...item, MAKQPKTG, INFOBN, INFOBSTH, INFOBSCD };
       });
 
