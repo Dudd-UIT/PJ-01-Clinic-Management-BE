@@ -16,10 +16,10 @@ class HoaDonController {
       const bindVars = {
         p_maLT: maLT,
         p_maLHD: maLHD,
-        p_tdtt: null,
+        p_tdtt: others?.tdtt ? new Date(others?.tdtt) : null,
         p_tttt: tttt,
-        p_thanhTien: 0,
-        p_pttt: null,
+        p_thanhTien: others?.thanhTien || 0,
+        p_pttt: others?.pttt || null,
         maHDOut: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 

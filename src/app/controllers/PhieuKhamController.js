@@ -118,7 +118,7 @@ class PhieuKhamController {
       req.body;
     try {
       const sqlQuery = ` BEGIN
-        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :MAPK_OUT);
+        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :PAR_GIODATLICH, :MAPK_OUT);
       END; `;
 
       const bindVars = {
@@ -128,7 +128,7 @@ class PhieuKhamController {
         PAR_MAHD: maHD,
         PAR_MAPHONG: Math.floor(Math.random() * 3) + 100,
         PAR_NGAY_KHAM: new Date(ngayKham),
-        PAR_NGAY_DAT_LICH: null,
+        PAR_NGAY_DAT_LICH: others?.ngayDatLich ? new Date(others.ngayDatLich) : null,
         PAR_TRANGTHAI: "Chưa thực hiện",
         PAR_STT: getSTTKham(new Date()), //Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
@@ -138,6 +138,7 @@ class PhieuKhamController {
         PAR_TRIEUCHUNGBENH: null,
         PAR_TINHTRANG: null,
         PAR_KETLUAN: null,
+        PAR_GIODATLICH: others?.gioDatLich || null,
         MAPK_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
