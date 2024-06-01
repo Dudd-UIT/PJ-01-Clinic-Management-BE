@@ -118,7 +118,7 @@ class PhieuKhamController {
       req.body;
     try {
       const sqlQuery = ` BEGIN
-        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :MAPK_OUT);
+        INSERT_PHIEUKHAM(:PAR_MABN, :PAR_MADV, :PAR_MABS, :PAR_MAPHONG, :PAR_MAHD, :PAR_NGAY_KHAM, :PAR_NGAY_DAT_LICH, :PAR_TRANGTHAI, :PAR_STT, :PAR_HUYETAP, :PAR_CHIEUCAO, :PAR_CANNANG, :PAR_TRIEUCHUNGBENH, :PAR_LYDO, :PAR_TINHTRANG, :PAR_KETLUAN, :PAR_GIODATLICH, :MAPK_OUT);
       END; `;
 
       const bindVars = {
@@ -128,7 +128,9 @@ class PhieuKhamController {
         PAR_MAHD: maHD,
         PAR_MAPHONG: Math.floor(Math.random() * 3) + 100,
         PAR_NGAY_KHAM: new Date(ngayKham),
-        PAR_NGAY_DAT_LICH: null,
+        PAR_NGAY_DAT_LICH: others?.ngayDatLich
+          ? new Date(others.ngayDatLich)
+          : null,
         PAR_TRANGTHAI: "Chưa thực hiện",
         PAR_STT: getSTTKham(new Date()), //Math.floor(Math.random() * 20) + 1,
         PAR_HUYETAP: null,
@@ -138,6 +140,7 @@ class PhieuKhamController {
         PAR_TRIEUCHUNGBENH: null,
         PAR_TINHTRANG: null,
         PAR_KETLUAN: null,
+        PAR_GIODATLICH: others?.gioDatLich || null,
         MAPK_OUT: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
@@ -191,7 +194,7 @@ class PhieuKhamController {
   // GET /phieukham/dsdk
   async fetchDSDK(req, res) {
     try {
-      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.MABS, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, 
+      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.MABS, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, pk.GIODATLICH, 
       hd.MAHD as MAHDPK, hd.TTTT as TTTTPK,
       hd1.THANHTIEN AS TIENTHUOC, hd1.TTTT AS TTTTDTH, 
       hd2.THANHTIEN AS TIENCLS, hd2.TTTT AS TTTTCLS
@@ -211,6 +214,12 @@ class PhieuKhamController {
       const formattedDSDKKham = dsDKKham.map((itemDKKham) => {
         itemDKKham.NGAYSINH = new Date(itemDKKham.NGAYSINH);
         itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
+        const NGAYKHAMMIN = itemDKKham.GIODATLICH
+          ? format(itemDKKham.NGAYKHAM, "dd/MM/yyyy") +
+            " - " +
+            itemDKKham.GIODATLICH
+          : format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+
         if (itemDKKham.TTTTCLS === null) {
           itemDKKham.TTTTCLS = "Không có đơn";
         }
@@ -227,8 +236,7 @@ class PhieuKhamController {
         const MAPKTG =
           "PK" +
           itemDKKham.MAPK +
-          "\n" +
-          format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+          "\n" + NGAYKHAMMIN;
         return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
@@ -247,7 +255,7 @@ class PhieuKhamController {
   async fetchKQKham(req, res) {
     try {
       const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, TTTT,
-      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG, hd.MAHD, hd.TDTT, hd.THANHTIEN
+      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG, hd.MAHD, hd.TDTT, hd.THANHTIEN, pk.GIODATLICH
       FROM PHIEUKHAM pk, BACSI bs, DICHVU dv, HOADON hd
       WHERE pk.MABSC = bs.MABS
       AND pk.MADVK = dv.MADV
@@ -257,7 +265,11 @@ class PhieuKhamController {
       let ctpk = await db.executeQuery(sqlQuery);
 
       const formattedCTPK = ctpk.map((item) => {
-        const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const NGAYKHAMMIN = item.GIODATLICH
+          ? format(item.NGAYKHAM, "dd/MM/yyyy") +
+            " - " +
+            item.GIODATLICH
+          : format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         const TDTTMIN = item.TDTT
           ? format(item.TDTT, "dd/MM/yyyy - HH:mm")
           : "Chưa thanh toán";
@@ -369,7 +381,7 @@ class PhieuKhamController {
   // GET /phieukham/lichSuKham/getById/:id-benh-nhan
   async fetchLSKbyIdBN(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM, pk.MAHD
+      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM, pk.MAHD, pk.GIODATLICH
       FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv
       WHERE pk.MABN = bn.MABN
       AND pk.MADVK = dv.MADV
@@ -390,7 +402,11 @@ class PhieuKhamController {
 
       const formattedDSPK = pkList.map((itemDKKham) => {
         itemDKKham.NGAYKHAM = new Date(itemDKKham.NGAYKHAM);
-        const NGAYKHAMMIN = format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        const NGAYKHAMMIN = itemDKKham.GIODATLICH
+          ? format(itemDKKham.NGAYKHAM, "dd/MM/yyyy") +
+            " - " +
+            itemDKKham.GIODATLICH
+          : format(itemDKKham.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         return { ...itemDKKham, NGAYKHAMMIN };
       });
 

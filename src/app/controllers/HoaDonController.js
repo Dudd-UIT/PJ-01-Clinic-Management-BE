@@ -16,10 +16,10 @@ class HoaDonController {
       const bindVars = {
         p_maLT: maLT,
         p_maLHD: maLHD,
-        p_tdtt: null,
+        p_tdtt: others?.tdtt ? new Date(others?.tdtt) : null,
         p_tttt: tttt,
         p_thanhTien: 0,
-        p_pttt: null,
+        p_pttt: others?.pttt || null,
         maHDOut: { dir: oracledb.BIND_OUT, type: oracledb.STRING },
       };
 
@@ -132,7 +132,7 @@ class HoaDonController {
       var redirectUrl = "bcareful://dsdv";
       var ipnUrl = "192.168.1.21:3001/hoadon/momo-ipn";
       // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
-      var amount = THANHTIEN/10;
+      var amount = THANHTIEN / 10;
       var requestType = "captureWallet";
       var extraData = ""; //pass empty value if your merchant does not have stores
 
