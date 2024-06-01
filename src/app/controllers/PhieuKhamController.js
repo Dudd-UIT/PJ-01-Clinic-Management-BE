@@ -541,6 +541,46 @@ class PhieuKhamController {
       });
     }
   }
+
+  // GET /phieukham/ctpk/future/getById/:id
+  async CTPKFutureById(req, res) {
+    try {
+      const sqlQuery = `
+        SELECT * 
+        FROM PHIEUKHAM P, DICHVU D
+        WHERE P.MADVK = D.MADV
+        AND MABN = 136
+        AND TRUNC(NGAYKHAM) >= TRUNC(SYSDATE)
+        ORDER BY NGAYKHAM`;
+
+      let ctpk = await db.executeQuery(sqlQuery);
+      console.log("ctpk", ctpk);
+
+      const formattedCTPK = ctpk.map((item) => {
+        const NGAYKHAMMIN = format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+        item.NGAYKHAM = new Date(item.NGAYKHAM);
+        return { ...item, NGAYKHAMMIN };
+      });
+      // làm lại khúc ni
+      if (ctpk.length === 0) {
+        res.status(200).json({
+          errcode: 1,
+          message: "No data found: invalid MAPK",
+          data: formattedCTPK,
+        });
+        return;
+      }
+
+      res.status(200).send({
+        errcode: 0,
+        message: "Successfull",
+        data: formattedCTPK,
+      });
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
 }
 
 module.exports = new PhieuKhamController();

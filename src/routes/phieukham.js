@@ -17,6 +17,6 @@ router.get("/ds-benh/getById/:id", phieukhamController.fetchDSBenh);
 router.post("/ttk/getById", phieukhamController.fetchTTKbyIdPK);
 router.post("/ttk/dsBenh/getById", phieukhamController.fetchDSBTTKbyIdPK);
 router.post("/update", phieukhamController.update);
-
+router.get("/ctpk/future/getById/:id", phieukhamController.CTPKFutureById);
 
 module.exports = router;
