@@ -207,6 +207,7 @@ class PhieuKhamController {
       LEFT JOIN HOADON hd1 ON dth.MAHD = hd1.MAHD 
       LEFT JOIN KETQUADICHVUCLS cls ON pk.MAPK = cls.MAPK
       LEFT JOIN HOADON hd2 ON cls.MAHD = hd2.MAHD
+      WHERE TRUNC(NGAYKHAM) <= TRUNC(SYSDATE)
       ORDER BY pk.NGAYKHAM DESC`;
 
       const dsDKKham = await db.executeQuery(sqlQuery);
@@ -233,10 +234,7 @@ class PhieuKhamController {
           " - SĐT: " +
           itemDKKham.SDT;
         const INFOBS = "BS " + itemDKKham.TRINHDO + " " + itemDKKham.TENBS;
-        const MAPKTG =
-          "PK" +
-          itemDKKham.MAPK +
-          "\n" + NGAYKHAMMIN;
+        const MAPKTG = "PK" + itemDKKham.MAPK + "\n" + NGAYKHAMMIN;
         return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
@@ -244,6 +242,58 @@ class PhieuKhamController {
         errcode: 0,
         message: "Successful",
         data: formattedDSDKKham,
+      });
+    } catch (error) {
+      console.error("Error querying database:", error);
+      res.status(500).json({ error: "Lỗi ở server" });
+    }
+  }
+
+  // GET /phieukham/dslh
+  async fetchDSLH(req, res) {
+    try {
+      const sqlQuery = `SELECT DISTINCT pk.MAPK, pk.NGAYKHAM, pk.STT, bn.MABN, bn.HOTEN as TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs.MABS, bs.HOTEN as TENBS, bs.TRINHDO, dv.TENDV, dv.GIADV, pk.TRANGTHAITH, pk.GIODATLICH, 
+        hd.MAHD as MAHDPK, hd.TTTT as TTTTPK,
+        hd1.THANHTIEN AS TIENTHUOC, hd1.TTTT AS TTTTDTH, 
+        hd2.THANHTIEN AS TIENCLS, hd2.TTTT AS TTTTCLS
+        FROM PHIEUKHAM pk
+        JOIN BENHNHAN bn ON pk.MABN = bn.MABN
+        JOIN BACSI bs on pk.MABSC = bs.MABS
+        JOIN DICHVU dv on pk.MADVK = dv.MADV
+        JOIN HOADON hd ON pk.MAHD = hd.MAHD
+        LEFT JOIN DONTHUOC dth ON pk.MAPK = dth.MAPK
+        LEFT JOIN HOADON hd1 ON dth.MAHD = hd1.MAHD 
+        LEFT JOIN KETQUADICHVUCLS cls ON pk.MAPK = cls.MAPK
+        LEFT JOIN HOADON hd2 ON cls.MAHD = hd2.MAHD
+        WHERE TRUNC(NGAYKHAM) > TRUNC(SYSDATE)
+        ORDER BY pk.NGAYKHAM ASC`;
+
+      const dslh = await db.executeQuery(sqlQuery);
+
+      const formatteddslh = dslh.map((item) => {
+        item.NGAYSINH = new Date(item.NGAYSINH);
+        item.NGAYKHAM = new Date(item.NGAYKHAM);
+        const NGAYKHAMMIN = item.GIODATLICH
+          ? format(item.NGAYKHAM, "dd/MM/yyyy") + " - " + item.GIODATLICH
+          : format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
+
+        if (item.TTTTCLS === null) {
+          item.TTTTCLS = "Không có đơn";
+        }
+        if (item.TTTTDTH === null) {
+          item.TTTTDTH = "Không có đơn";
+        }
+        const INFOBN =
+          item.TENBN + "\n" + item.GIOITINH + " - SĐT: " + item.SDT;
+        const INFOBS = "BS " + item.TRINHDO + " " + item.TENBS;
+        const MAPKTG = "PK" + item.MAPK + "\n" + NGAYKHAMMIN;
+        return { ...item, MAPKTG, INFOBN, INFOBS };
+      });
+
+      res.status(200).json({
+        errcode: 0,
+        message: "Successful",
+        data: formatteddslh,
       });
     } catch (error) {
       console.error("Error querying database:", error);
@@ -266,9 +316,7 @@ class PhieuKhamController {
 
       const formattedCTPK = ctpk.map((item) => {
         const NGAYKHAMMIN = item.GIODATLICH
-          ? format(item.NGAYKHAM, "dd/MM/yyyy") +
-            " - " +
-            item.GIODATLICH
+          ? format(item.NGAYKHAM, "dd/MM/yyyy") + " - " + item.GIODATLICH
           : format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         const TDTTMIN = item.TDTT
           ? format(item.TDTT, "dd/MM/yyyy - HH:mm")
