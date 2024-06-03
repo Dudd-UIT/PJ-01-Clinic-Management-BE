@@ -10,7 +10,7 @@ const getImage = function (imageName) {
   console.log('imagePath', imagePath)
 
   if (fs.existsSync(imagePath)) {
-    return `http://localhost:3001/images/${imageName}`;
+    return `http://152.69.209.236:3001/images/${imageName}`;
   } else {
     throw new Error("File not found: " + imageName);
   }
