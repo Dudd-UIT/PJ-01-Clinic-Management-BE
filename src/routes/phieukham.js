@@ -10,6 +10,7 @@ router.post("/insert-bn-pk", phieukhamController.insertBNPK);
 router.post("/insert-just-pk", phieukhamController.insertIustPK);
 router.post("/update-trang-thai", phieukhamController.updateTrangThai);
 router.get("/dsdk", phieukhamController.fetchDSDK);
+router.get("/dslh", phieukhamController.fetchDSLH);
 router.get("/chitiet-pk/getById/:id", phieukhamController.fetchKQKham);
 router.get("/dspk/getById/:id", phieukhamController.fetchPKbyIdHD);
 router.get("/lichSuKham/getById/:id", phieukhamController.fetchLSKbyIdBN);
