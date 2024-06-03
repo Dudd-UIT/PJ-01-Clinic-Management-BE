@@ -16,6 +16,7 @@ const lothuocRouter = require('./lothuoc')
 const thongkeRouter = require('./thongke')
 const ldvRouter = require('./ldv')
 const usergroupRouter = require('./usergroup')
+const datlichthuocRouter = require('./datlichthuoc')
 
 
 const {
@@ -62,6 +63,7 @@ function route(app) {
 
   app.use("/usergroup", usergroupRouter);
 
+  app.use("/datlichthuoc", datlichthuocRouter);
 
 }
 
