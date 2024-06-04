@@ -51,7 +51,7 @@ class HoaDonController {
       const bindVars = {
         p_maHD: MAHD,
         p_maLT: maLT,
-        p_tdtt: new Date(tdtt), 
+        p_tdtt: new Date(tdtt),
         p_tttt: tttt,
         p_thanhTien: THANHTIEN,
         p_pttt: pttt,
@@ -130,7 +130,7 @@ class HoaDonController {
       var orderId = requestId;
       var orderInfo = "Thanh toán " + (TENLOAIDV || "Hóa đơn khám");
       var redirectUrl = "bcareful://dsdv";
-      var ipnUrl = "192.168.1.21:3001/hoadon/momo-ipn";
+      var ipnUrl = "http://152.69.209.236:3001/hoadon/momo-ipn";
       // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
       var amount = THANHTIEN / 10;
       var requestType = "captureWallet";
@@ -213,8 +213,9 @@ class HoaDonController {
 
   // POST /hoadon/momo-ipn
   async momoIPN(req, res) {
-    // const { resultCode, message, payType, responseTime, amount, ...others } =
-    //   req.body;
+    const { resultCode, message, payType, responseTime, amount, ...others } =
+      req.body;
+    console.log("MESSAGE FROM MOMO >>>>>>>> ", req.body);
     try {
       // Xử lý kết quả trả về
       console.log(req.body);
