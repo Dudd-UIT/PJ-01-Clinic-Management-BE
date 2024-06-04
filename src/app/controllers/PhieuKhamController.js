@@ -608,12 +608,14 @@ class PhieuKhamController {
 
   // GET /phieukham/ctpk/future/getById/:id
   async CTPKFutureById(req, res) {
+    const date = req.params.id.toLowerCase();
+    console.log("date", date);
     try {
       const sqlQuery = `
         SELECT * 
         FROM PHIEUKHAM P, DICHVU D
         WHERE P.MADVK = D.MADV
-        AND MABN = 136
+        AND MABN = ${req.params.id}
         AND TRUNC(NGAYKHAM) >= TRUNC(SYSDATE)
         ORDER BY NGAYKHAM`;
 
