@@ -1,17 +1,22 @@
-const { handleUserLogin } = require("../../services/UserService");
 const db = require("../../config/db");
 
-// GET /dvt/getAll
-const getAll = async (req, res) => {
+// GET /datlichthuoc/getAllGioThuoc/:id
+const getAllGioThuoc = async (req, res) => {
   try {
-    const sqlQuery = `SELECT * FROM DONVITHUOC WHERE TRANGTHAI = 1`;
+    const sqlQuery = `
+      SELECT G.MACTDT, G.MAGIO, G.THOIGIAN, CT.TRANGTHAIDATLICH, CT.GHICHU
+      FROM GIODATLICH G
+      JOIN CTDT CT ON CT.MACTDT = G.MACTDT 
+      WHERE G.MACTDT = ${req.params.id}`;
 
-    const DVT = await db.executeQuery(sqlQuery);
+    const gioList = await db.executeQuery(sqlQuery);
+
+    console.log("gioList: ", gioList);
 
     res.status(200).json({
       errcode: 0,
       message: "Successful",
-      data: DVT,
+      data: gioList,
     });
   } catch (error) {
     console.error("Error querying database:", error);
@@ -23,24 +28,25 @@ const getAll = async (req, res) => {
   }
 };
 
-// POST /dvt/insert
+// POST /datlichthuoc/insert
 const insert = async (req, res) => {
-  const { tenDVT } = req.body;
+  const { maCTDT, thoiGian } = req.body;
 
   try {
     const sqlQuery = ` 
     BEGIN
-        INSERT_DONVITHUOC(:PAR_TENDONVI);
+        INSERT_GIODATLICH(:PAR_MACTDT, :PAR_THOIGIAN);
     END;`;
     const bindVars = {
-      PAR_TENDONVI: tenDVT,
+      PAR_MACTDT: maCTDT,
+      PAR_THOIGIAN: thoiGian,
     };
 
     const result = await db.executeProcedure(sqlQuery, bindVars);
 
     res.status(200).json({
       errcode: 0,
-      message: "Thêm đơn vị thuốc thành công",
+      message: "Thêm giờ uống thuốc thành công",
       data: "",
     });
   } catch (error) {
@@ -53,25 +59,33 @@ const insert = async (req, res) => {
   }
 };
 
-// POST /dvt/update
+// POST /datlichthuoc/update
 const update = async (req, res) => {
-  const { maDVT, tenDVT } = req.body;
-
+  console.log()
   try {
-    const sqlQuery = ` 
-        BEGIN
-            UPDATE_DONVITHUOC(:PAR_MADVT, :PAR_TENDONVI);
-        END;`;
-    const bindVars = {
-      PAR_MADVT: maDVT,
-      PAR_TENDONVI: tenDVT,
-    };
+    const data = req.body;
+    const MACTDT = data[0].MACTDT;
 
-    const result = await db.executeProcedure(sqlQuery, bindVars);
+    const sqlQuery = `DELETE FROM GIODATLICH WHERE MACTDT = '${MACTDT}'`;
+    await db.executeQuery(sqlQuery);
+
+    for (const item of data) {
+      const { MACTDT, THOIGIAN } = item;
+      const sqlQuery = ` 
+      BEGIN
+        INSERT_GIODATLICH(:PAR_MACTDT, :PAR_THOIGIAN);
+      END;`;
+      const bindVars = {
+        PAR_MACTDT: MACTDT,
+        PAR_THOIGIAN: THOIGIAN,
+      };
+
+      await db.executeProcedure(sqlQuery, bindVars);
+    }
 
     res.status(200).json({
       errcode: 0,
-      message: "Cập nhật đơn vị thuốc thành công",
+      message: "Cập nhật lịch uống thuốc thành công",
       data: "",
     });
   } catch (error) {
@@ -85,23 +99,23 @@ const update = async (req, res) => {
 };
 
 // POST /dvt/delete
-const deleteDVT = async (req, res) => {
-  const { maDVT } = req.body;
+const deleteLichThuoc = async (req, res) => {
+  const { maGio } = req.body;
 
   try {
     const sqlQuery = ` 
         BEGIN
-          DELETE_DONVITHUOC(:PAR_MADVT);
+          DELETE_GIODATLICH(:PAR_MAGIO);
         END;`;
     const bindVars = {
-      PAR_MADVT: maDVT,
+      PAR_MAGIO: maGio,
     };
 
     const result = await db.executeProcedure(sqlQuery, bindVars);
 
     res.status(200).json({
       errcode: 0,
-      message: "Xóa đơn vị thuốc thành công",
+      message: "Xóa giờ đặt lịch thuốc thành công",
       data: "",
     });
   } catch (error) {
@@ -115,8 +129,8 @@ const deleteDVT = async (req, res) => {
 };
 
 module.exports = {
-  getAll,
+  getAllGioThuoc,
   insert,
   update,
-  deleteDVT,
+  deleteLichThuoc,
 };

@@ -43,7 +43,7 @@ class DoctorController {
       JOIN PHANCONGKHAM P ON B.MABS = P.MABS
       LEFT JOIN PHIEUKHAM PK ON B.MABS = PK.MABSC 
       AND TRUNC(NGAYKHAM) = TRUNC(TO_DATE('${dateMonthYear}', 'DD/MM/YYYY'))
-      WHERE P.THU = '${dayOfWeek}'`;
+      WHERE P.THU = '${'Thứ sáu'}'`;
       const doctors = await db.executeQuery(sqlQuery);
       // const formattedDoctors = doctors.map((doctor) => {
       //   doctor.NGAYSINH = new Date(doctor.NGAYSINH);
