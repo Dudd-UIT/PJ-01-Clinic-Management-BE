@@ -1,5 +1,6 @@
 const db = require("../../config/db");
 const oracledb = require("oracledb");
+const convertDayName = require("../../util/formatDayName");
 
 class DoctorController {
   // GET /bacsi/getAll
@@ -37,13 +38,15 @@ class DoctorController {
       const [dayOfWeek, dateMonthYear] = date.split(", ");
       console.log(dayOfWeek);
       console.log(dateMonthYear);
+      const formatDayOfWeek = convertDayName(dayOfWeek);
+      console.log("THU THU THU >>>>>>>>> ",formatDayOfWeek);
       const sqlQuery = `
       SELECT B.MABS, B.HOTEN, B.TRINHDO, B.GIOITINH, B.CHUYENKHOA, B.SDT, P.GIOBATDAU, P.GIOKETTHUC, PK.GIODATLICH
       FROM BACSI B
       JOIN PHANCONGKHAM P ON B.MABS = P.MABS
       LEFT JOIN PHIEUKHAM PK ON B.MABS = PK.MABSC 
       AND TRUNC(NGAYKHAM) = TRUNC(TO_DATE('${dateMonthYear}', 'DD/MM/YYYY'))
-      WHERE P.THU = '${'Thứ sáu'}'`;
+      WHERE P.THU = '${formatDayOfWeek}'`;
       const doctors = await db.executeQuery(sqlQuery);
       // const formattedDoctors = doctors.map((doctor) => {
       //   doctor.NGAYSINH = new Date(doctor.NGAYSINH);
