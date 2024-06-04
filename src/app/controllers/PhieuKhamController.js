@@ -233,10 +233,7 @@ class PhieuKhamController {
           " - SĐT: " +
           itemDKKham.SDT;
         const INFOBS = "BS " + itemDKKham.TRINHDO + " " + itemDKKham.TENBS;
-        const MAPKTG =
-          "PK" +
-          itemDKKham.MAPK +
-          "\n" + NGAYKHAMMIN;
+        const MAPKTG = "PK" + itemDKKham.MAPK + "\n" + NGAYKHAMMIN;
         return { ...itemDKKham, MAPKTG, INFOBN, INFOBS };
       });
 
@@ -266,9 +263,7 @@ class PhieuKhamController {
 
       const formattedCTPK = ctpk.map((item) => {
         const NGAYKHAMMIN = item.GIODATLICH
-          ? format(item.NGAYKHAM, "dd/MM/yyyy") +
-            " - " +
-            item.GIODATLICH
+          ? format(item.NGAYKHAM, "dd/MM/yyyy") + " - " + item.GIODATLICH
           : format(item.NGAYKHAM, "dd/MM/yyyy - HH:mm");
         const TDTTMIN = item.TDTT
           ? format(item.TDTT, "dd/MM/yyyy - HH:mm")
