@@ -1,4 +1,4 @@
-export function convertDayName(dayName) {
+function convertDayName(dayName) {
   if (!dayName || typeof dayName !== 'string') {
     return '';
   }
@@ -11,3 +11,5 @@ export function convertDayName(dayName) {
 
   return `${words[0]} ${words[1].charAt(0).toLowerCase() + words[1].slice(1)}`;
 }
+
+module.exports = convertDayName;
