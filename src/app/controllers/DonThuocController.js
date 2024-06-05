@@ -85,7 +85,7 @@ class DonThuocController {
     try {
       const sqlQuery = `
       SELECT distinct CTDT.MACTDT, th.MATHUOC, TENTHUOC, THANHPHAN, TENDONVI, SOLUONGTHUOC, GIABANLUCKE, SOLANUONG, SOLUONGUONG, GHICHU, hd.MAHD, TTTT
-      FROM DONTHUOC dth, CTDT, THUOC th, DONVITHUOC dvth, HOADON hd
+      FROM DONTHUOC dth, CTDT, THUOC th, DONVITHUOC dvth, HOADON hd, LETAN lt
       WHERE dth.MADT = ctdt.MADT
       AND ctdt.MATHUOC = th.MATHUOC
       AND th.MADVT = dvth.MADVT
