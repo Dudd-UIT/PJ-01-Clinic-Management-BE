@@ -5,6 +5,7 @@ const datLichThuocController = require("../app/controllers/DatLichThuocControlle
 
 // /datlichthuoc/...
 
+router.get("/getAll", datLichThuocController.getAll)
 router.get("/getAllGioThuoc/:id", datLichThuocController.getAllGioThuoc);
 router.post("/update", datLichThuocController.update);
 

@@ -1,5 +1,31 @@
 const db = require("../../config/db");
 
+// GET /datlichthuoc/getAll
+const getAll = async (req, res) => {
+  try {
+    const sqlQuery = `
+      SELECT G.MACTDT, G.MAGIO, G.THOIGIAN, CT.GHICHU, T.TENTHUOC, T.THANHPHAN
+      FROM GIODATLICH G
+      JOIN CTDT CT ON CT.MACTDT = G.MACTDT
+      JOIN THUOC T ON T.MATHUOC = CT.MATHUOC`;
+
+    const gioList = await db.executeQuery(sqlQuery);
+
+    res.status(200).json({
+      errcode: 0,
+      message: "Successful",
+      data: gioList,
+    });
+  } catch (error) {
+    console.error("Error querying database:", error);
+    res.status(500).json({
+      errcode: -1,
+      message: "Error from server",
+      data: [],
+    });
+  }
+};
+
 // GET /datlichthuoc/getAllGioThuoc/:id
 const getAllGioThuoc = async (req, res) => {
   try {
@@ -61,7 +87,7 @@ const insert = async (req, res) => {
 
 // POST /datlichthuoc/update
 const update = async (req, res) => {
-  console.log()
+  console.log();
   try {
     const data = req.body;
     const MACTDT = data[0].MACTDT;
@@ -129,6 +155,7 @@ const deleteLichThuoc = async (req, res) => {
 };
 
 module.exports = {
+  getAll,
   getAllGioThuoc,
   insert,
   update,
