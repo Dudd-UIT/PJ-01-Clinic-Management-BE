@@ -51,7 +51,7 @@ class HoaDonController {
       const bindVars = {
         p_maHD: MAHD,
         p_maLT: maLT,
-        p_tdtt: new Date(tdtt),
+        p_tdtt: new Date(tdtt), 
         p_tttt: tttt,
         p_thanhTien: THANHTIEN,
         p_pttt: pttt,

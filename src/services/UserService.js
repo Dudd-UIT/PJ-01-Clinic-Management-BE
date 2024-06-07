@@ -149,7 +149,7 @@ const handleUserLogin = async (rawData) => {
     }
     return {
       errcode: 1,
-      message: "Email hoặc mật khẩu cũ không chính xác.",
+      message: "Email hoặc mật khẩu không chính xác.",
       data: "",
     };
   } catch (error) {
