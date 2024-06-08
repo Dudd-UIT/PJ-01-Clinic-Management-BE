@@ -429,10 +429,11 @@ class PhieuKhamController {
   // GET /phieukham/lichSuKham/getById/:id-benh-nhan
   async fetchLSKbyIdBN(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM, pk.MAHD, pk.GIODATLICH
-      FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv
+      const sqlQuery = `SELECT pk.MAPK, dt.MADT, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM, pk.MAHD, pk.GIODATLICH
+      FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv, DONTHUOC dt
       WHERE pk.MABN = bn.MABN
       AND pk.MADVK = dv.MADV
+      AND pk.MAPK = dt.MAPK
       AND bn.MABN = ${req.params.id}
       ORDER BY pk.NGAYKHAM`;
 
