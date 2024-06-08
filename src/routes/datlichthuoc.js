@@ -5,8 +5,9 @@ const datLichThuocController = require("../app/controllers/DatLichThuocControlle
 
 // /datlichthuoc/...
 
-router.get("/getAll", datLichThuocController.getAll)
+router.get("/getAll/:id", datLichThuocController.getAll)
 router.get("/getAllGioThuoc/:id", datLichThuocController.getAllGioThuoc);
+router.post("/delete", datLichThuocController.deleteLichThuoc);
 router.post("/update", datLichThuocController.update);
 
 module.exports = router;
