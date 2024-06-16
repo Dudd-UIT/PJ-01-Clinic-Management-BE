@@ -88,8 +88,8 @@ class ClsController {
   // GET /ds-cls/getById/:id
   async fetchClsById(req, res) {
     try {
-      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, cls.GIADVCLSLUCDK, hd.TTTT, hd.MAHD, hd.TDTT, hd.THANHTIEN, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS, cls.THOIGIANTAO
-      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs1, BACSi bs2, BENHNHAN bn
+      const sqlQuery = `SELECT cls.MAKQ, cls.IMAGE, pk.MAPK, pk.NGAYKHAM, dv.MADV, ldv.TENLOAIDV, dv.TENDV, dv.GIADV, cls.TRANGTHAITH, cls.GIADVCLSLUCDK, hd.TTTT, hd.MAHD, hd.TDTT, hd.THANHTIEN, bn.HOTEN AS TENBN, bn.NGAYSINH, bn.GIOITINH, bn.SDT, bs1.HOTEN as TENBSTH, bs1.TRINHDO as TRINHDOBSTH, bs2.HOTEN as TENBSCD, bs2.TRINHDO as TRINHDOBSCD, cls.MOTA, cls.KETLUANCLS, cls.THOIGIANTAO, ph.MAPHONG, ph.TENPHONG, ph.SOPHONG, ph.TANG
+      FROM PHIEUKHAM pk, KETQUADICHVUCLS cls, DICHVU dv, HOADON hd, LOAIDV ldv, BACSI bs1, BACSi bs2, BENHNHAN bn, PHONGKHAM ph
       WHERE pk.MAPK = cls.MAPK
       AND cls.MADVCLS = dv.MADV
       AND ldv.MALOAIDV = dv.MALOAIDV
@@ -97,6 +97,7 @@ class ClsController {
       AND bs1.MABS = cls.MABSTH
       AND bs2.MABS = pk.MABSC
       AND bn.MABN = pk.MABN
+      AND dv.MAPHONG = ph.MAPHONG
       AND pk.MAPK = ${req.params.id}`;
 
       const clsList = await db.executeQuery(sqlQuery);

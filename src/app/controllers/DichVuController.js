@@ -5,9 +5,10 @@ class DichVuController {
   // GET /dichvu/getAll
   async getAll(req, res) {
     try {
-      const sqlQuery = `SELECT MADV, D.MALOAIDV, TENDV, GIADV, TENLOAIDV 
-          FROM DICHVU D, LOAIDV L 
+      const sqlQuery = `SELECT MADV, D.MALOAIDV, TENDV, GIADV, TENLOAIDV, ph.MAPHONG, ph.SOPHONG 
+          FROM DICHVU D, LOAIDV L , PHONGKHAM ph
           WHERE L.MALOAIDV = D.MALOAIDV
+          AND D.MAPHONG = ph.MAPHONG
           AND D.TRANGTHAI = 1`;
       const dichvus = await db.executeQuery(sqlQuery);
       res.status(200).json({
@@ -48,17 +49,18 @@ class DichVuController {
 
   // POST /dichvu/insert
   insert = async (req, res) => {
-    const { tenDichVu, maLDV, giaDichVu } = req.body;
+    const { tenDichVu, maLDV, giaDichVu, maPhong } = req.body;
 
     try {
       const sqlQuery = ` 
       BEGIN
-          INSERT_DICHVU(:PAR_MALOAIDV, :PAR_TENDV, :PAR_GIADV);
+          INSERT_DICHVU(:PAR_MALOAIDV, :PAR_TENDV, :PAR_GIADV, :PAR_MAPHONG);
       END;`;
       const bindVars = {
         PAR_MALOAIDV: maLDV,
         PAR_TENDV: tenDichVu,
         PAR_GIADV: giaDichVu,
+        PAR_MAPHONG: maPhong,
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
@@ -80,18 +82,19 @@ class DichVuController {
 
   // POST /dichvu/update
   update = async (req, res) => {
-    const { maDV, maLDV, tenDichVu, giaDichVu } = req.body;
+    const { maDV, maLDV, tenDichVu, giaDichVu, maPhong } = req.body;
 
     try {
       const sqlQuery = ` 
         BEGIN
-          UPDATE_DICHVU(:PAR_MADV, :PAR_MALOAIDV, :PAR_TENDV, :PAR_GIADV);
+          UPDATE_DICHVU(:PAR_MADV, :PAR_MALOAIDV, :PAR_TENDV, :PAR_GIADV, :PAR_MAPHONG);
         END;`;
       const bindVars = {
         PAR_MADV: maDV,
         PAR_MALOAIDV: maLDV,
         PAR_TENDV: tenDichVu,
         PAR_GIADV: giaDichVu,
+        PAR_MAPHONG: maPhong,
       };
 
       const result = await db.executeProcedure(sqlQuery, bindVars);
