@@ -304,12 +304,13 @@ class PhieuKhamController {
   // GET /phieukham/chitiet-pk/getById/:id
   async fetchKQKham(req, res) {
     try {
-      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, TTTT,
-      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG, hd.MAHD, hd.TDTT, hd.THANHTIEN, pk.GIODATLICH
-      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv, HOADON hd
+      const sqlQuery = `SELECT pk.MAPK, bs.HOTEN AS TENBS, bs.TRINHDO, dv.TENDV, ph.MAPHONG, NGAYKHAM, NGAYDATLICH, TRANGTHAITH, TTTT,
+      LYDOKHAM, TRIEUCHUNGBENH, TINHTRANGCOTHE, KETLUAN, HUYETAP, CHIEUCAO, CANNANG, hd.MAHD, hd.TDTT, hd.THANHTIEN, pk.GIODATLICH, ph.TENPHONG, ph.SOPHONG, ph.TANG
+      FROM PHIEUKHAM pk, BACSI bs, DICHVU dv, HOADON hd, PHONGKHAM ph
       WHERE pk.MABSC = bs.MABS
       AND pk.MADVK = dv.MADV
       AND hd.MAHD = pk.MAHD
+      AND dv.MAPHONG = ph.MAPHONG
       AND pk.MAPK = ${req.params.id}`;
 
       let ctpk = await db.executeQuery(sqlQuery);

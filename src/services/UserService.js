@@ -101,7 +101,7 @@ const handleUserLogin = async (rawData) => {
   try {
     const sqlQuery = `SELECT * FROM TAIKHOAN WHERE USERNAME = '${username}' AND TRANGTHAI = 1`;
     let user = await db.executeQuery(sqlQuery);
-
+    console.log('>>>>user', user);
     if (user.length > 0) {
       let isCorrectPassword = checkPassword(password, user[0].PASSWORD);
       if (isCorrectPassword === true) {
@@ -130,7 +130,7 @@ const handleUserLogin = async (rawData) => {
           username: user[0].USERNAME,
           groupName,
           groupID,
-          userInfo
+          userInfo,
         };
         let token = createJWT(payload);
         return {
