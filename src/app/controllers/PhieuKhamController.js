@@ -431,11 +431,11 @@ class PhieuKhamController {
   async fetchLSKbyIdBN(req, res) {
     try {
       const sqlQuery = `SELECT pk.MAPK, dt.MADT, dv.TENDV, pk.TRANGTHAITH, pk.NGAYKHAM, pk.MAHD, pk.GIODATLICH
-      FROM PHIEUKHAM pk, BENHNHAN bn, DICHVU dv, DONTHUOC dt
-      WHERE pk.MABN = bn.MABN
-      AND pk.MADVK = dv.MADV
-      AND pk.MAPK = dt.MAPK
-      AND bn.MABN = ${req.params.id}
+      FROM PHIEUKHAM pk
+      JOIN BENHNHAN bn ON pk.MABN = bn.MABN
+      JOIN DICHVU dv ON pk.MADVK = dv.MADV
+      LEFT JOIN DONTHUOC dt ON pk.MAPK = dt.MAPK
+      WHERE bn.MABN = ${req.params.id}
       ORDER BY pk.NGAYKHAM`;
 
       let pkList = await db.executeQuery(sqlQuery);
