@@ -1,13 +1,16 @@
 const db = require("../../config/db");
 
-// GET /datlichthuoc/getAll
+// GET /datlichthuoc/getAll/:id
 const getAll = async (req, res) => {
   try {
     const sqlQuery = `
-      SELECT G.MACTDT, G.MAGIO, G.THOIGIAN, CT.GHICHU, T.TENTHUOC, T.THANHPHAN
-      FROM GIODATLICH G
-      JOIN CTDT CT ON CT.MACTDT = G.MACTDT
-      JOIN THUOC T ON T.MATHUOC = CT.MATHUOC`;
+    SELECT G.MACTDT, G.MAGIO, G.THOIGIAN, CT.GHICHU, T.TENTHUOC, T.THANHPHAN
+    FROM GIODATLICH G
+    JOIN CTDT CT ON CT.MACTDT = G.MACTDT
+    JOIN THUOC T ON T.MATHUOC = CT.MATHUOC
+    JOIN DONTHUOC d ON CT.MADT = D.MADT
+    JOIN PHIEUKHAM p ON D.MAPK = P.MAPK
+    WHERE P.MABN = ${req.params.id}`;
 
     const gioList = await db.executeQuery(sqlQuery);
 
@@ -87,7 +90,6 @@ const insert = async (req, res) => {
 
 // POST /datlichthuoc/update
 const update = async (req, res) => {
-  console.log();
   try {
     const data = req.body;
     const MACTDT = data[0].MACTDT;
@@ -124,17 +126,17 @@ const update = async (req, res) => {
   }
 };
 
-// POST /dvt/delete
+// POST /datlichthuoc/delete
 const deleteLichThuoc = async (req, res) => {
-  const { maGio } = req.body;
+  const { maCTDT } = req.body;
 
   try {
     const sqlQuery = ` 
         BEGIN
-          DELETE_GIODATLICH(:PAR_MAGIO);
+          DELETE_GIODATLICH(:PAR_MACTDT);
         END;`;
     const bindVars = {
-      PAR_MAGIO: maGio,
+      PAR_MACTDT: maCTDT,
     };
 
     const result = await db.executeProcedure(sqlQuery, bindVars);
