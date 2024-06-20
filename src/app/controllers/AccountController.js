@@ -180,7 +180,7 @@ const verify = async (req, res) => {
   }
 };
 
-// POST /account/confirm
+// POST /account/confirm  
 const confirmUser = async (req, res) => {
   console.log(req.body);
   try {
