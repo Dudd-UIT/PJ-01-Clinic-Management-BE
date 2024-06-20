@@ -10,7 +10,7 @@ const nonSecurePaths = [
   "/account/verify",
   "/account/confirm",
   "/account/logout",
-  "/benhnhan/getAll/noMaTK"
+  "/benhnhan/getAll/noMaTK",
 ];
 
 const createJWT = (payload) => {
