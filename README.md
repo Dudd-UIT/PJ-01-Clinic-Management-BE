@@ -50,5 +50,5 @@
 
 ### Truy cập
 * Ứng dụng web có thể truy cập dễ dàng thông qua link: http://152.69.209.236/
-* Mã nguồn frontend: https://github.com/22520260/QLPM-Frontend
-* Mã nguồn backend: https://github.com/22520260/QLPM-Backend
+* Mã nguồn frontend: https://github.com/Dudd-UIT/PJ-01-Clinic-Management-FE
+* Mã nguồn backend: https://github.com/Dudd-UIT/PJ-01-Clinic-Management-BE
